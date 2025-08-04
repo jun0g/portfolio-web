@@ -1,0 +1,17 @@
+﻿version: '3.8'
+services:
+  backend:
+    build: ./backend
+    volumes:
+      - ./data:/app/data
+    ports:
+      - "4030:4030"
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    restart: unless-stopped
