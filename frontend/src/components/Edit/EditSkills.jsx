@@ -1,40 +1,120 @@
 ﻿import React from 'react';
+import {
+  Box,
+  Typography,
+  TextField,
+  Checkbox,
+  FormControlLabel,
+  Stack,
+  Button,
+  IconButton,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel
+} from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
 
-const LEVELS = ['설계', '운영', '고도화'];
+const LEVELS = ['설계', '운영', '고도화', 'PoC'];
+const CATEGORIES = ['Infra', 'DevOps', 'Observability', 'Backend', 'Etc'];
 
 export default function EditSkills({ skills, setSkills }) {
-  const addItem = () => setSkills([...skills, { name: '', level: [] }]);
-  const updateItem = (idx, field, value) => {
-    setSkills(skills.map((item, i) => i === idx ? { ...item, [field]: value } : item));
+  const handleAdd = () => {
+    setSkills([...skills, { name: '', level: [], category: 'Etc' }]);
   };
+
+  const handleChange = (idx, field, value) => {
+    const updated = [...skills];
+    updated[idx][field] = value;
+    setSkills(updated);
+  };
+
   const toggleLevel = (idx, level) => {
-    const skill = skills[idx];
-    const has = skill.level.includes(level);
-    const newLevel = has ? skill.level.filter(l => l !== level) : [...skill.level, level];
-    updateItem(idx, 'level', newLevel);
+    const updated = [...skills];
+    const has = updated[idx].level.includes(level);
+    updated[idx].level = has
+      ? updated[idx].level.filter((l) => l !== level)
+      : [...updated[idx].level, level];
+    setSkills(updated);
   };
-  const removeItem = idx => setSkills(skills.filter((_, i) => i !== idx));
+
+  const handleRemove = (idx) => {
+    const updated = skills.filter((_, i) => i !== idx);
+    setSkills(updated);
+  };
 
   return (
-    <section>
-      <h3>보유 기술</h3>
-      {skills.map((item, idx) => (
-        <div key={idx} style={{ border: '1px solid #eee', marginBottom: 8, padding: 8 }}>
-          <input type="text" placeholder="기술명" value={item.name} onChange={e => updateItem(idx, 'name', e.target.value)} />
-          {LEVELS.map(level => (
-            <label key={level} style={{ marginLeft: 8 }}>
-              <input
-                type="checkbox"
-                checked={item.level.includes(level)}
-                onChange={() => toggleLevel(idx, level)}
+    <Box>
+      <Typography variant="h6" gutterBottom>
+        보유 기술 편집
+      </Typography>
+
+      <Stack spacing={2}>
+        {skills.map((skill, idx) => (
+          <Stack
+            key={idx}
+            direction="row"
+            spacing={2}
+            alignItems="center"
+            flexWrap="wrap"
+          >
+            <TextField
+              label="기술명"
+              value={skill.name}
+              onChange={(e) => handleChange(idx, 'name', e.target.value)}
+              size="small"
+              sx={{ minWidth: 150 }}
+            />
+
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>카테고리</InputLabel>
+              <Select
+                label="카테고리"
+                value={skill.category || 'Etc'}
+                onChange={(e) => handleChange(idx, 'category', e.target.value)}
+              >
+                {CATEGORIES.map((cat) => (
+                  <MenuItem key={cat} value={cat}>
+                    {cat}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            {LEVELS.map((level) => (
+              <FormControlLabel
+                key={level}
+                control={
+                  <Checkbox
+                    size="small"
+                    checked={skill.level.includes(level)}
+                    onChange={() => toggleLevel(idx, level)}
+                  />
+                }
+                label={level}
               />
-              {level}
-            </label>
-          ))}
-          <button type="button" onClick={() => removeItem(idx)}>삭제</button>
-        </div>
-      ))}
-      <button type="button" onClick={addItem}>항목 추가</button>
-    </section>
+            ))}
+
+            <IconButton
+              color="error"
+              onClick={() => handleRemove(idx)}
+              size="small"
+            >
+              <DeleteIcon fontSize="small" />
+            </IconButton>
+          </Stack>
+        ))}
+
+        <Button
+          variant="contained"
+          onClick={handleAdd}
+          startIcon={<AddIcon />}
+          sx={{ width: 'fit-content' }}
+        >
+          항목 추가
+        </Button>
+      </Stack>
+    </Box>
   );
 }

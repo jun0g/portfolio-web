@@ -48,7 +48,7 @@ export default function MainPage() {
         <ProjectList projects={resume.projects || []} />
       </Paper>
       <Paper elevation={3} sx={{ p: 3 }}>
-        <Skills skills={resume.skills || []} />
+        <Skills skills={resume.skills || {}} />
       </Paper>
       <Paper elevation={3} sx={{ p: 3 }}>
         <SideProjects sideProjects={resume.sideProjects || []} />
