@@ -1,17 +1,51 @@
-﻿version: '3.8'
+﻿version: "3.9"
+
 services:
-  backend:
-    build: ./backend
-    volumes:
-      - ./data:/app/data
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
     ports:
-      - "4030:4030"
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: resume_db
+    volumes:
+      - ./data/db:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: ./api
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment:
+      # API가 컨테이너 네트워크 내 'mongo' 호스트로 접속
+      MONGODB_URI: mongodb://mongo:27017
+      MONGODB_DB: resume_db
+      MONGODB_COLLECTION: resumes
+      PORT: 8043
+    ports:
+      - "8043:8043"
     restart: unless-stopped
 
-  frontend:
-    build: ./frontend
-    ports:
-      - "3000:3000"
-    depends_on:
-      - backend
-    restart: unless-stopped
+  # web:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   depends_on:
+  #     api:
+  #       condition: service_started
+  #   environment:
+  #     SITE_ORIGIN: http://localhost:3000
+  #     API_BASE_URL: http://api:8043
+  #     NODE_ENV: production
+  #     NEXT_TELEMETRY_DISABLED: "1"
+  #   ports:
+  #     - "3000:3000"
+  #   restart: unless-stopped
+
+volumes:
+  mongo_data:
