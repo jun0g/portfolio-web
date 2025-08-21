@@ -107,16 +107,12 @@ export default function HomePage() {
 
             <TimelineContent>
               <Typography variant="h6">{item.title}</Typography>
-                {(item.job || item.summary) && (
                   <Typography variant="body2">
-                    {item.job} {item.summary}
+                    {item.summary}
                   </Typography>
-                )}
-              {item.detail && (
                 <Typography variant="body2" sx={{ whiteSpace: "pre-line" }}>
                   {item.detail}
                 </Typography>
-              )}
             </TimelineContent>
           </TimelineItem>
         ))}
