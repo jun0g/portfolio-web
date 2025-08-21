@@ -31,21 +31,19 @@ services:
       - "8043:8043"
     restart: unless-stopped
 
-  # web:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   depends_on:
-  #     api:
-  #       condition: service_started
-  #   environment:
-  #     SITE_ORIGIN: http://localhost:3000
-  #     API_BASE_URL: http://api:8043
-  #     NODE_ENV: production
-  #     NEXT_TELEMETRY_DISABLED: "1"
-  #   ports:
-  #     - "3000:3000"
-  #   restart: unless-stopped
+  web:
+    build: ./web
+    depends_on:
+      api:
+        condition: service_started
+    environment:
+      SITE_ORIGIN: http://localhost:3000
+      API_BASE_URL: http://api:8043
+      NODE_ENV: production
+      NEXT_TELEMETRY_DISABLED: "1"
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
 
 volumes:
   mongo_data:

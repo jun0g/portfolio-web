@@ -1,6 +1,7 @@
-﻿import { CssBaseline } from "@mui/material";
+﻿import { PropsWithChildren } from "react";
+import { CssBaseline } from "@mui/material";
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="ko">
       <body>

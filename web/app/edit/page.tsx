@@ -88,7 +88,7 @@ export default function EditPage() {
   const fetchFirst = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/resumes?limit=1");
+      const res = await fetch("/api/resumes");
       const data = await res.json();
       if (data?.items?.length) {
         const r = data.items[0];
@@ -276,15 +276,15 @@ export default function EditPage() {
 
       <Grid container spacing={3}>
         {/* 안내 */}
-        <Grid item xs={12}>
+        <Grid>
           <Alert severity="info">
-            각 섹션별로 개별 수정 후, 오른쪽 상단의 <b>저장</b> 버튼으로 해당 섹션만 PATCH 저장할 수 있습니다.
+            각 섹션별로 개별 수정 후, 오른쪽 상단의 <b>저장</b> 버튼으로 해당 석션만 PATCH 저장할 수 있습니다.
             필요하면 상단의 <b>전체 저장</b>으로 한 번에 PUT도 가능합니다.
           </Alert>
         </Grid>
 
         {/* 프로필 */}
-        <Grid item xs={12}>
+        <Grid>
           <Card>
             <CardContent>
               <SectionHeader
@@ -292,27 +292,48 @@ export default function EditPage() {
                 onSave={() => patchSection({ profile: resume.profile })}
               />
               <Grid container spacing={2}>
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    label="이름"
-                    fullWidth
-                    value={resume.profile?.name || ""}
-                    onChange={(e) =>
-                      setResume((r: any) => ({ ...r, profile: { ...r.profile, name: e.target.value } }))
-                    }
-                  />
+                <Grid container rowSpacing={1}>
+                  <Grid>
+                    <TextField
+                      label="이름"
+                      value={resume.profile?.name || ""}
+                      onChange={(e) =>
+                        setResume((r: any) => ({ ...r, profile: { ...r.profile, name: e.target.value } }))
+                      }
+                    />
+                  </Grid>
+                  <Grid>
+                    <TextField
+                      label="아바타 URL"
+                      fullWidth
+                      value={resume.profile?.avatarUrl || ""}
+                      onChange={(e) =>
+                        setResume((r: any) => ({ ...r, profile: { ...r.profile, avatarUrl: e.target.value } }))
+                      }
+                    />
+                  </Grid>
+                  <Grid>
+                    <TextField
+                      label="이메일"
+                      value={resume.profile?.contact?.email || ""}
+                      onChange={(e) =>
+                        setResume((r: any) => ({ ...r, profile: { ...r.profile, contact: { ...r.profile?.contact, email: e.target.value } },
+                        }))
+                      }
+                    />
+                  </Grid>
+                  <Grid>
+                    <TextField
+                      label="전화번호"
+                      value={resume.profile?.contact?.phone || ""}
+                      onChange={(e) =>
+                        setResume((r: any) => ({ ...r, profile: { ...r.profile, contact: { ...r.profile?.contact, phone: e.target.value } },
+                        }))
+                      }
+                    />
+                  </Grid>
                 </Grid>
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    label="아바타 URL"
-                    fullWidth
-                    value={resume.profile?.avatarUrl || ""}
-                    onChange={(e) =>
-                      setResume((r: any) => ({ ...r, profile: { ...r.profile, avatarUrl: e.target.value } }))
-                    }
-                  />
-                </Grid>
-                <Grid item xs={12}>
+                <Grid size={16}>
                   <TextField
                     label="소개"
                     fullWidth
@@ -324,39 +345,13 @@ export default function EditPage() {
                     }
                   />
                 </Grid>
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    label="이메일"
-                    fullWidth
-                    value={resume.profile?.contact?.email || ""}
-                    onChange={(e) =>
-                      setResume((r: any) => ({
-                        ...r,
-                        profile: { ...r.profile, contact: { ...r.profile?.contact, email: e.target.value } },
-                      }))
-                    }
-                  />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    label="전화번호"
-                    fullWidth
-                    value={resume.profile?.contact?.phone || ""}
-                    onChange={(e) =>
-                      setResume((r: any) => ({
-                        ...r,
-                        profile: { ...r.profile, contact: { ...r.profile?.contact, phone: e.target.value } },
-                      }))
-                    }
-                  />
-                </Grid>
               </Grid>
             </CardContent>
           </Card>
         </Grid>
 
         {/* 타임라인 */}
-        <Grid item xs={12}>
+        <Grid>
           <Card>
             <CardContent>
               <SectionHeader
@@ -390,7 +385,7 @@ export default function EditPage() {
                         </Stack>
                       </Box>
                       <Grid container spacing={2}>
-                        <Grid item xs={12} md={4}>
+                        <Grid >
                           <Select
                             fullWidth
                             value={item.type || "experience"}
@@ -407,7 +402,7 @@ export default function EditPage() {
                             <MenuItem value="military">military</MenuItem>
                           </Select>
                         </Grid>
-                        <Grid item xs={12} md={8}>
+                        <Grid size={3}>
                           <TextField
                             label="제목"
                             fullWidth
@@ -422,9 +417,9 @@ export default function EditPage() {
                           />
                         </Grid>
 
-                        <Grid item xs={6} md={3}>
+                        <Grid size={2}>
                           <TextField
-                            label="시작(YYYY.MM)"
+                            label="시작(YYYY-MM)"
                             fullWidth
                             value={item.start || ""}
                             onChange={(e) =>
@@ -436,9 +431,9 @@ export default function EditPage() {
                             }
                           />
                         </Grid>
-                        <Grid item xs={6} md={3}>
+                        <Grid size={2}>
                           <TextField
-                            label="종료(YYYY.MM)"
+                            label="종료(YYYY-MM)"
                             fullWidth
                             disabled={!!item.current}
                             value={item.end || ""}
@@ -451,7 +446,7 @@ export default function EditPage() {
                             }
                           />
                         </Grid>
-                        <Grid item xs={12} md={3}>
+                        <Grid >
                           <FormControlLabel
                             control={
                               <Checkbox
@@ -459,31 +454,22 @@ export default function EditPage() {
                                 onChange={(e) =>
                                   setResume((r: any) => {
                                     const t = [...(r.timeline || [])];
-                                    t[idx] = { ...t[idx], current: e.target.checked, end: e.target.checked ? "" : t[idx].end };
+                                    t[idx] = {
+                                      ...t[idx],
+                                      current: e.target.checked,
+                                      end: e.target.checked ? "" : t[idx].end,
+                                    };
                                     return { ...r, timeline: t };
                                   })
                                 }
                               />
                             }
-                            label="현재 재직/진행"
+                            label="재직/진행중"
                           />
                         </Grid>
-
-                        <Grid item xs={12} md={6}>
-                          <TextField
-                            label="직무"
-                            fullWidth
-                            value={item.job || ""}
-                            onChange={(e) =>
-                              setResume((r: any) => {
-                                const t = [...(r.timeline || [])];
-                                t[idx] = { ...t[idx], job: e.target.value };
-                                return { ...r, timeline: t };
-                              })
-                            }
-                          />
-                        </Grid>
-                        <Grid item xs={12} md={6}>
+                      </Grid>
+                      <Stack spacing={2} mt={2}>
+                        <Grid >
                           <TextField
                             label="요약"
                             fullWidth
@@ -494,10 +480,10 @@ export default function EditPage() {
                                 t[idx] = { ...t[idx], summary: e.target.value };
                                 return { ...r, timeline: t };
                               })
-                            }
+                            } 
                           />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid>
                           <TextField
                             label="상세"
                             fullWidth
@@ -512,8 +498,8 @@ export default function EditPage() {
                               })
                             }
                           />
-                        </Grid>
                       </Grid>
+                      </Stack>
                     </CardContent>
                   </Card>
                 ))}
@@ -523,7 +509,7 @@ export default function EditPage() {
         </Grid>
 
         {/* 스킬 */}
-        <Grid item xs={12}>
+        <Grid>
           <Card>
             <CardContent>
               <SectionHeader
@@ -533,11 +519,11 @@ export default function EditPage() {
                   setResume((r: any) => ({ ...r, skills: [...(r.skills || []), emptySkillCategory()] }))
                 }
               />
-              <Stack spacing={2}>
+              <Grid container rowSpacing={2} columnSpacing={2}>
                 {(resume.skills || []).map((cat: any, cIdx: number) => (
                   <Card key={cIdx} variant="outlined">
                     <CardContent>
-                      <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
+                      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
                         <TextField
                           label="카테고리"
                           value={cat.category || ""}
@@ -562,14 +548,12 @@ export default function EditPage() {
                           카테고리 삭제
                         </Button>
                       </Box>
-
-                      <Stack spacing={1}>
+                      <Stack spacing={2}>
                         {(cat.stacks || []).map((st: any, sIdx: number) => (
-                          <Grid container spacing={1} key={sIdx}>
-                            <Grid item xs={12} md={3}>
+                          <Grid container spacing={1}>
+                            <Grid size={12}>
                               <TextField
                                 label="스택명"
-                                fullWidth
                                 value={st.name || ""}
                                 onChange={(e) =>
                                   setResume((r: any) => {
@@ -581,26 +565,6 @@ export default function EditPage() {
                                   })
                                 }
                               />
-                            </Grid>
-                            <Grid item xs={12} md={8}>
-                              <TextField
-                                label="상세"
-                                fullWidth
-                                multiline
-                                minRows={1}
-                                value={st.detail || ""}
-                                onChange={(e) =>
-                                  setResume((r: any) => {
-                                    const s = [...(r.skills || [])];
-                                    const stacks = [...(s[cIdx].stacks || [])];
-                                    stacks[sIdx] = { ...stacks[sIdx], detail: e.target.value };
-                                    s[cIdx] = { ...s[cIdx], stacks };
-                                    return { ...r, skills: s };
-                                  })
-                                }
-                              />
-                            </Grid>
-                            <Grid item xs={12} md={1}>
                               <Button
                                 color="error"
                                 onClick={() =>
@@ -614,6 +578,24 @@ export default function EditPage() {
                               >
                                 삭제
                               </Button>
+                            </Grid>
+                            <Grid size={12}>
+                              <TextField
+                                label="상세"
+                                multiline
+                                fullWidth
+                                minRows={1}
+                                value={st.detail || ""}
+                                onChange={(e) =>
+                                  setResume((r: any) => {
+                                    const s = [...(r.skills || [])];
+                                    const stacks = [...(s[cIdx].stacks || [])];
+                                    stacks[sIdx] = { ...stacks[sIdx], detail: e.target.value };
+                                    s[cIdx] = { ...s[cIdx], stacks };
+                                    return { ...r, skills: s };
+                                  })
+                                }
+                              />
                             </Grid>
                           </Grid>
                         ))}
@@ -634,13 +616,13 @@ export default function EditPage() {
                     </CardContent>
                   </Card>
                 ))}
-              </Stack>
+              </Grid>
             </CardContent>
           </Card>
         </Grid>
 
         {/* 자격/어학 */}
-        <Grid item xs={12}>
+        <Grid>
           <Card>
             <CardContent>
               <SectionHeader
@@ -656,7 +638,7 @@ export default function EditPage() {
               <Stack spacing={2}>
                 {(resume.certifications || []).map((cert: any, idx: number) => (
                   <Grid container spacing={2} key={idx} alignItems="center">
-                    <Grid item xs={12} md={3}>
+                    <Grid >
                       <TextField
                         label="자격명"
                         fullWidth
@@ -670,7 +652,7 @@ export default function EditPage() {
                         }
                       />
                     </Grid>
-                    <Grid item xs={12} md={3}>
+                    <Grid >
                       <TextField
                         label="발급기관"
                         fullWidth
@@ -684,7 +666,7 @@ export default function EditPage() {
                         }
                       />
                     </Grid>
-                    <Grid item xs={12} md={3}>
+                    <Grid >
                       <TextField
                         label="취득일"
                         fullWidth
@@ -698,7 +680,7 @@ export default function EditPage() {
                         }
                       />
                     </Grid>
-                    <Grid item xs={12} md={2}>
+                    <Grid >
                       <TextField
                         label="번호"
                         fullWidth
@@ -712,7 +694,7 @@ export default function EditPage() {
                         }
                       />
                     </Grid>
-                    <Grid item xs={12} md={1}>
+                    <Grid >
                       <Button
                         color="error"
                         onClick={() =>
@@ -733,7 +715,7 @@ export default function EditPage() {
         </Grid>
 
         {/* 추가사항 */}
-        <Grid item xs={12}>
+        <Grid>
           <Card>
             <CardContent>
               <SectionHeader
@@ -748,10 +730,8 @@ export default function EditPage() {
                   <Card key={idx} variant="outlined">
                     <CardContent>
                       <Grid container spacing={2} alignItems="center">
-                        <Grid item xs={12} md={4}>
                           <TextField
                             label="제목"
-                            fullWidth
                             value={ex.title || ""}
                             onChange={(e) =>
                               setResume((r: any) => {
@@ -761,8 +741,17 @@ export default function EditPage() {
                               })
                             }
                           />
-                        </Grid>
-                        <Grid item xs={12} md={7}>
+                          <Button
+                            color="error"
+                            onClick={() =>
+                              setResume((r: any) => ({
+                                ...r,
+                                extra: (r.extra || []).filter((_: any, i: number) => i !== idx),
+                              }))
+                            }
+                          >
+                            삭제
+                          </Button>
                           <TextField
                             label="내용"
                             fullWidth
@@ -777,20 +766,6 @@ export default function EditPage() {
                               })
                             }
                           />
-                        </Grid>
-                        <Grid item xs={12} md={1}>
-                          <Button
-                            color="error"
-                            onClick={() =>
-                              setResume((r: any) => ({
-                                ...r,
-                                extra: (r.extra || []).filter((_: any, i: number) => i !== idx),
-                              }))
-                            }
-                          >
-                            삭제
-                          </Button>
-                        </Grid>
                       </Grid>
                     </CardContent>
                   </Card>
@@ -801,7 +776,7 @@ export default function EditPage() {
         </Grid>
 
         {/* 하단 액션 */}
-        <Grid item xs={12}>
+        <Grid>
           <Divider sx={{ my: 1 }} />
           <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
             <Button

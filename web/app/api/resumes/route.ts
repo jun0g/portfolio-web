@@ -5,7 +5,7 @@ const API_BASE = process.env.API_BASE_URL ?? "http://localhost:8043";
 
 export async function GET() {
   try {
-    const upstream = `${API_BASE}/api/resumes?limit=1000&skip=0`;
+    const upstream = `${API_BASE}/api/resumes`;
     const resp = await fetch(upstream, { cache: "no-store" });
 
     const text = await resp.text();
@@ -25,7 +25,7 @@ export async function GET() {
       {
         error: "Upstream fetch failed",
         detail: err?.message || String(err),
-        target: `${API_BASE}/api/resumes?limit=1000&skip=0`,
+        target: `${API_BASE}/api/resumes`,
       },
       { status: 502 }
     );

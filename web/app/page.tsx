@@ -130,7 +130,7 @@ export default function HomePage() {
       </Typography>
       <Grid container spacing={2}>
         {resume.skills.map((cat: any, idx: number) => (
-          <Grid item xs={12} key={idx}>
+          <Grid key={idx}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -175,13 +175,13 @@ export default function HomePage() {
 
       {/* 추가사항 */}
       <Typography variant="h5" fontWeight="bold" gutterBottom>
-        추가사항
+        추가내용
       </Typography>
       <Stack spacing={2}>
         {resume.extra.map((item: any, idx: number) => (
           <Card key={idx}>
             <CardContent>
-              <Typography variant="h6">{item.title}</Typography>
+              <Typography variant="h6" fontWeight="bold">{item.title}</Typography>
               <Typography variant="body2" sx={{ whiteSpace: "pre-line" }}>
                 {item.content}
               </Typography>
