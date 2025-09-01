@@ -46,22 +46,27 @@ async function handler(req: Request, method: string, slug?: string[]) {
 }
 
 export async function GET(req: Request, context: any) {
-  const slug = context?.params?.slug as string[] | undefined;
+  const { params } = context;
+  const slug = params?.slug as string[] | undefined;
   return handler(req, "GET", slug);
 }
 export async function POST(req: Request, context: any) {
-  const slug = context?.params?.slug as string[] | undefined;
+  const { params } = context;
+  const slug = params?.slug as string[] | undefined;
   return handler(req, "POST", slug);
 }
 export async function PUT(req: Request, context: any) {
-  const slug = context?.params?.slug as string[] | undefined;
+  const { params } = context;
+  const slug = params?.slug as string[] | undefined;
   return handler(req, "PUT", slug);
 }
 export async function PATCH(req: Request, context: any) {
-  const slug = context?.params?.slug as string[] | undefined;
+  const { params } = context;
+  const slug = params?.slug as string[] | undefined;
   return handler(req, "PATCH", slug);
 }
 export async function DELETE(req: Request, context: any) {
-  const slug = context?.params?.slug as string[] | undefined;
+  const { params } = context;
+  const slug = params?.slug as string[] | undefined;
   return handler(req, "DELETE", slug);
 }

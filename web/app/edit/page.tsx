@@ -417,11 +417,13 @@ export default function EditPage() {
                           />
                         </Grid>
 
-                        <Grid size={2}>
+                        <Grid size={2.3}>
                           <TextField
-                            label="시작(YYYY-MM)"
+                            label="시작일"
+                            type="date"
                             fullWidth
                             value={item.start || ""}
+                            slotProps={{ inputLabel: { shrink: true } }}
                             onChange={(e) =>
                               setResume((r: any) => {
                                 const t = [...(r.timeline || [])];
@@ -431,12 +433,16 @@ export default function EditPage() {
                             }
                           />
                         </Grid>
-                        <Grid size={2}>
+
+                        <Grid size={2.3}>
                           <TextField
-                            label="종료(YYYY-MM)"
+                            label="종료일"
+                            type="date"
                             fullWidth
                             disabled={!!item.current}
                             value={item.end || ""}
+                            slotProps={{ inputLabel: { shrink: true } }}
+                            inputProps={{ min: item.start || undefined }}
                             onChange={(e) =>
                               setResume((r: any) => {
                                 const t = [...(r.timeline || [])];
@@ -550,7 +556,7 @@ export default function EditPage() {
                       </Box>
                       <Stack spacing={2}>
                         {(cat.stacks || []).map((st: any, sIdx: number) => (
-                          <Grid container spacing={1}>
+                          <Grid container spacing={1} key={sIdx}>
                             <Grid size={12}>
                               <TextField
                                 label="스택명"
