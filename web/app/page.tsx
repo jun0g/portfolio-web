@@ -2,9 +2,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import * as React from 'react';
 import {
   Avatar,
   Box,
+  Chip,
   Container,
   Grid,
   Typography,
@@ -12,6 +14,8 @@ import {
   CardContent,
   Divider,
   Stack,
+  Tabs,
+  Tab
 } from "@mui/material";
 import {
   Timeline,
@@ -25,8 +29,25 @@ import TimelineOppositeContent, {
   timelineOppositeContentClasses,
 } from "@mui/lab/TimelineOppositeContent";
 
+// TabPanel 컴포넌트 추가
+function TabPanel(props: { children?: React.ReactNode; value: number; index: number }) {
+  const { children, value, index, ...other } = props;
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`tabpanel-${index}`}
+      aria-labelledby={`tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box sx={{ pt: 2 }}>{children}</Box>}
+    </div>
+  );
+}
+
 export default function HomePage() {
   const [resume, setResume] = useState<any>(null);
+  const [tabValue, setTabValue] = useState(0);
 
   useEffect(() => {
     fetch("/api/resumes")
@@ -153,149 +174,247 @@ const maskCertNumber = (num: string) => {
         </Box>
       </Box>
 
-      {/* 이력서 타임라인 */}
-      <Box display="flex" alignItems="center" gap={2} mb={1}>
-        <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ mb: 0 }}>
-          타임라인
-        </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 0 }}>
-          {getTotalExperience(resume.timeline) && `(총 경력: ${getTotalExperience(resume.timeline)})`}
-        </Typography>
-      </Box>
-
-      <Timeline
-        sx={{
-          pl: 0, // 전체 타임라인의 왼쪽 패딩 제거
-          [`& .${timelineOppositeContentClasses.root}`]: {
-            flex: 0.32, // 날짜 칼럼 비율 유지
-            paddingLeft: 0, // OppositeContent 왼쪽 여백 제거
-            marginLeft: 0,
-          },
-          "& .MuiTimelineItem-root": {
-            "&:before": {
-              flex: 0, // 디폴트 세로 라인 앞 공간 제거
-              padding: 0,
-            },
-          },
-        }}
+      {/* 탭 */}
+      <Tabs
+        value={tabValue}
+        onChange={(_, v) => setTabValue(v)}
+        aria-label="resume tabs"
+        sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}
       >
-        {resume.timeline.map((item: any, idx: number) => {
-          const { rangeText, durationText } = getRangeAndDuration(item);
-          return (
-            <TimelineItem key={idx}>
-              <TimelineOppositeContent color="text.secondary" sx={{ fontSize: "0.95rem" }}>
-                <Box display="flex" flexDirection="column" lineHeight={1.2}>
-                  <span>{rangeText}</span>
-                  {durationText && (
-                    <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5 }}>
-                      {durationText}
+        <Tab label="이력서" />
+        <Tab label="경력기술서" />
+        <Tab label="포트폴리오" />
+      </Tabs>
+
+      {/* 이력서 탭 */}
+      <TabPanel value={tabValue} index={0}>
+        {/* 이력서 타임라인 */}
+        <Box display="flex" alignItems="center" gap={2} mb={1}>
+          <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ mb: 0 }}>
+            타임라인
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 0 }}>
+            {getTotalExperience(resume.timeline) && `(총 경력: ${getTotalExperience(resume.timeline)})`}
+          </Typography>
+        </Box>
+
+        <Timeline
+          sx={{
+            pl: 0,
+            [`& .${timelineOppositeContentClasses.root}`]: {
+              flex: 0.32,
+              paddingLeft: 0,
+              marginLeft: 0,
+            },
+            "& .MuiTimelineItem-root": {
+              "&:before": {
+                flex: 0,
+                padding: 0,
+              },
+            },
+          }}
+        >
+          {resume.timeline.map((item: any, idx: number) => {
+            const { rangeText, durationText } = getRangeAndDuration(item);
+            return (
+              <TimelineItem key={idx}>
+                <TimelineOppositeContent color="text.secondary" sx={{ fontSize: "0.95rem" }}>
+                  <Box display="flex" flexDirection="column" lineHeight={1.2}>
+                    <span>{rangeText}</span>
+                    {durationText && (
+                      <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5 }}>
+                        {durationText}
+                      </Typography>
+                    )}
+                  </Box>
+                </TimelineOppositeContent>
+
+                <TimelineSeparator>
+                  <TimelineDot sx={{ backgroundColor: typeColors[item.type] || "grey" }} />
+                  {idx < resume.timeline.length - 1 && <TimelineConnector />}
+                </TimelineSeparator>
+
+                <TimelineContent>
+                  <Typography variant="h6">
+                    {item.title}
+                    <Typography
+                      component="span"
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ ml: 1 }} // 왼쪽에 간격 주기
+                    >
+                      {item.summary}
                     </Typography>
-                  )}
-                </Box>
-              </TimelineOppositeContent>
+                  </Typography>
+                  <Typography variant="body2" sx={{ whiteSpace: "pre-line" }}>
+                    {item.detail}
+                  </Typography>
+                </TimelineContent>
+              </TimelineItem>
+            );
+          })}
+        </Timeline>
 
-              <TimelineSeparator>
-                <TimelineDot sx={{ backgroundColor: typeColors[item.type] || "grey" }} />
-                {idx < resume.timeline.length - 1 && <TimelineConnector />}
-              </TimelineSeparator>
+        <Divider sx={{ my: 4 }} />
 
-              <TimelineContent>
+        {/* 스킬 */}
+        <Typography variant="h5" fontWeight="bold" gutterBottom>
+          스킬
+        </Typography>
+        <Grid container spacing={2}>
+          {resume.skills.map((cat: any, idx: number) => (
+            <Grid key={idx}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    {cat.category}
+                  </Typography>
+                  {cat.stacks.map((stack: any, sIdx: number) => (
+                    <Box key={sIdx} mb={2}>
+                      <Chip key={sIdx} label={stack.name} size="small" color="primary" variant="outlined" />
+                      <Typography variant="body2" sx={{ whiteSpace: "pre-line" }}>
+                        {stack.detail}
+                      </Typography>
+                    </Box>
+                  ))}
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+
+        <Divider sx={{ my: 4 }} />
+
+        {/* 자격/어학 */}
+        <Typography variant="h5" fontWeight="bold" gutterBottom>
+          자격 / 어학
+        </Typography>
+        <Stack spacing={1}>
+          {resume.certifications.map((cert: any, idx: number) => (
+            <Card key={idx} sx={{ mb: 0.5 }}>
+              <CardContent sx={{ pb: '12px !important' }}>
                 <Typography variant="h6">
-                  {item.title}
+                  {cert.name}
                   <Typography
-                    component="span"
                     variant="body2"
                     color="text.secondary"
-                    sx={{ ml: 1 }} // 왼쪽에 간격 주기
+                    component="span"
+                    sx={{ ml: 1 }}
                   >
-                    {item.summary}
+                    {cert.organization} | 취득일: {cert.date} | 자격증번호: {maskCertNumber(cert.number)}
                   </Typography>
                 </Typography>
-                <Typography variant="body2" sx={{ whiteSpace: "pre-line" }}>
-                  {item.detail}
-                </Typography>
-              </TimelineContent>
-            </TimelineItem>
-          );
-        })}
-      </Timeline>
-
-      <Divider sx={{ my: 4 }} />
-
-      {/* 스킬 */}
-      <Typography variant="h5" fontWeight="bold" gutterBottom>
-        스킬
-      </Typography>
-      <Grid container spacing={2}>
-        {resume.skills.map((cat: any, idx: number) => (
-          <Grid key={idx}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  {cat.category}
-                </Typography>
-                {cat.stacks.map((stack: any, sIdx: number) => (
-                  <Box key={sIdx} mb={2}>
-                    <Typography variant="subtitle1" fontWeight="bold">
-                      {stack.name}
-                    </Typography>
-                    <Typography variant="body2" sx={{ whiteSpace: "pre-line" }}>
-                      {stack.detail}
-                    </Typography>
-                  </Box>
-                ))}
               </CardContent>
             </Card>
-          </Grid>
-        ))}
-      </Grid>
+          ))}
+        </Stack>
 
-      <Divider sx={{ my: 4 }} />
+        <Divider sx={{ my: 4 }} />
 
-      {/* 자격/어학 */}
-      <Typography variant="h5" fontWeight="bold" gutterBottom>
-        자격 / 어학
-      </Typography>
-      <Stack spacing={1}>
-        {resume.certifications.map((cert: any, idx: number) => (
-          <Card key={idx} sx={{ mb: 0.5 }}>
-            <CardContent sx={{ pb: '12px !important' }}>
-              <Typography variant="h6">
-                {cert.name}
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  component="span"
-                  sx={{ ml: 1 }}
-                >
-                  {cert.organization} | 취득일: {cert.date} | 자격증번호: {maskCertNumber(cert.number)}
+        {/* 추가사항 */}
+        <Typography variant="h5" fontWeight="bold" gutterBottom>
+          추가내용
+        </Typography>
+        <Stack spacing={2}>
+          {resume.extra.map((item: any, idx: number) => (
+            <Card key={idx}>
+              <CardContent>
+                <Typography variant="h6" fontWeight="bold">
+                  {item.title}
                 </Typography>
-              </Typography>
-            </CardContent>
-          </Card>
-        ))}
-      </Stack>
+                <Typography variant="body2" sx={{ whiteSpace: "pre-line" }}>
+                  {item.content}
+                </Typography>
+              </CardContent>
+            </Card>
+          ))}
+        </Stack>
+      </TabPanel>
 
-      <Divider sx={{ my: 4 }} />
+      {/* 경력기술서 탭 */}
+      <TabPanel value={tabValue} index={1}>
+        <Typography variant="h5" fontWeight="bold" gutterBottom>
+          경력기술서
+        </Typography>
+        <Stack spacing={3}>
+          {resume.projects.map((item: any, idx: number) => (
+            <Card key={idx} sx={{ p: 2 }}>
+              <CardContent>
+                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                  <Typography variant="h6" fontWeight="bold">
+                    {item.title}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {item.start} ~ {item.end}
+                  </Typography>
+                </Stack>
+                <Typography variant="subtitle1" fontWeight="bold" mt={1}>
+                  담당 역할
+                </Typography>
+                <Typography variant="body2" mb={1}>
+                  {item.role}
+                </Typography>
+                <Typography variant="subtitle1" fontWeight="bold">
+                  프로젝트 개요
+                </Typography>
+                <Typography variant="body2" mb={1}>
+                  {item.description}
+                </Typography>
+                <Typography variant="subtitle1" fontWeight="bold">
+                  기술 스택
+                </Typography>
+                <Stack direction="row" spacing={1} flexWrap="wrap" mt={1}>
+                  {item.skills.map((skill: string, sIdx: number) => (
+                    <Chip key={sIdx} label={skill} size="small" color="primary" variant="outlined" />
+                  ))}
+                </Stack>
+              </CardContent>
+            </Card>
+          ))}
+        </Stack>
+      </TabPanel>
 
-      {/* 추가사항 */}
-      <Typography variant="h5" fontWeight="bold" gutterBottom>
-        추가내용
-      </Typography>
-      <Stack spacing={2}>
-        {resume.extra.map((item: any, idx: number) => (
-          <Card key={idx}>
-            <CardContent>
-              <Typography variant="h6" fontWeight="bold">
-                {item.title}
-              </Typography>
-              <Typography variant="body2" sx={{ whiteSpace: "pre-line" }}>
-                {item.content}
-              </Typography>
-            </CardContent>
-          </Card>
-        ))}
-      </Stack>
+      {/* 포트폴리오 탭 */}
+      <TabPanel value={tabValue} index={2}>
+        <Typography variant="h5" fontWeight="bold" gutterBottom>
+          포트폴리오
+        </Typography>
+        <Stack spacing={3}>
+          {resume.portfolio.map((item: any, idx: number) => (
+            <Card key={idx} sx={{ p: 2 }}>
+              <CardContent>
+                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                  <Typography variant="h6" fontWeight="bold">
+                    {item.title}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {item.start} ~ {item.end}
+                  </Typography>
+                </Stack>
+                <Typography variant="subtitle2" fontWeight="bold" mt={1}>
+                  담당 역할
+                </Typography>
+                <Typography variant="body2" mb={1}>
+                  {item.role}
+                </Typography>
+                <Typography variant="subtitle2" fontWeight="bold">
+                  설명
+                </Typography>
+                <Typography variant="body2" mb={1}>
+                  {item.description}
+                </Typography>
+                {item.url && (
+                  <Typography variant="body2" color="primary">
+                    <a href={item.url} target="_blank" rel="noopener noreferrer">
+                      {item.url}
+                    </a>
+                  </Typography>
+                )}
+              </CardContent>
+            </Card>
+          ))}
+        </Stack>
+      </TabPanel>
     </Container>
   );
 }

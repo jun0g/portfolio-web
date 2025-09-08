@@ -27,6 +27,8 @@ import SaveIcon from "@mui/icons-material/Save";
 import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
 
 type Resume = any;
 
@@ -58,6 +60,25 @@ const emptyExtra = () => ({
   content: "",
 });
 
+// --- 아래 타입/초기값 추가 ---
+const emptyProject = () => ({
+  title: "",
+  start: "",
+  end: "",
+  role: "",
+  description: "",
+  skills: [""],
+});
+
+const emptyPortfolio = () => ({
+  title: "",
+  start: "",
+  end: "",
+  role: "",
+  description: "",
+  url: "",
+});
+
 const DEFAULT_RESUME: Resume = {
   profile: {
     avatarUrl: "",
@@ -69,6 +90,8 @@ const DEFAULT_RESUME: Resume = {
   skills: [emptySkillCategory()],
   certifications: [],
   extra: [],
+  projects: [],
+  portfolio: [],
 };
 
 export default function EditPage() {
@@ -80,6 +103,7 @@ export default function EditPage() {
     message: string;
     severity: "success" | "error" | "info" | "warning";
   }>({ open: false, message: "", severity: "success" });
+  const [tabValue, setTabValue] = useState(0);
 
   const showSnack = (message: string, severity: typeof snack.severity = "success") =>
     setSnack({ open: true, message, severity });
@@ -235,6 +259,22 @@ export default function EditPage() {
     </Box>
   );
 
+  // TabPanel 컴포넌트 추가
+  function TabPanel(props: { children?: React.ReactNode; value: number; index: number }) {
+    const { children, value, index, ...other } = props;
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`edit-tabpanel-${index}`}
+        aria-labelledby={`edit-tab-${index}`}
+        {...other}
+      >
+        {value === index && <Box sx={{ pt: 2 }}>{children}</Box>}
+      </div>
+    );
+  }
+
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
       {/* 헤더 */}
@@ -274,535 +314,847 @@ export default function EditPage() {
         </Stack>
       </Box>
 
-      <Grid container spacing={3}>
-        {/* 안내 */}
-        <Grid>
-          <Alert severity="info">
-            각 섹션별로 개별 수정 후, 오른쪽 상단의 <b>저장</b> 버튼으로 해당 석션만 PATCH 저장할 수 있습니다.
-            필요하면 상단의 <b>전체 저장</b>으로 한 번에 PUT도 가능합니다.
-          </Alert>
-        </Grid>
+      {/* 탭 */}
+      <Tabs
+        value={tabValue}
+        onChange={(_, v) => setTabValue(v)}
+        aria-label="edit resume tabs"
+        sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}
+      >
+        <Tab label="이력서" />
+        <Tab label="경력기술서" />
+        <Tab label="포트폴리오" />
+      </Tabs>
 
-        {/* 프로필 */}
-        <Grid>
-          <Card>
-            <CardContent>
-              <SectionHeader
-                title="프로필"
-                onSave={() => patchSection({ profile: resume.profile })}
-              />
-              <Grid container spacing={2}>
-                <Grid container rowSpacing={1}>
-                  <Grid>
-                    <TextField
-                      label="이름"
-                      value={resume.profile?.name || ""}
-                      onChange={(e) =>
-                        setResume((r: any) => ({ ...r, profile: { ...r.profile, name: e.target.value } }))
-                      }
-                    />
+      <TabPanel value={tabValue} index={0}>
+        <Grid container spacing={3}>
+          {/* 안내 */}
+          <Grid>
+            <Alert severity="info">
+              각 섹션별로 개별 수정 후, 오른쪽 상단의 <b>저장</b> 버튼으로 해당 석션만 PATCH 저장할 수 있습니다.
+              필요하면 상단의 <b>전체 저장</b>으로 한 번에 PUT도 가능합니다.
+            </Alert>
+          </Grid>
+
+          {/* 프로필 */}
+          <Grid>
+            <Card>
+              <CardContent>
+                <SectionHeader
+                  title="프로필"
+                  onSave={() => patchSection({ profile: resume.profile })}
+                />
+                <Grid container spacing={2}>
+                  <Grid container rowSpacing={1}>
+                    <Grid>
+                      <TextField
+                        label="이름"
+                        value={resume.profile?.name || ""}
+                        onChange={(e) =>
+                          setResume((r: any) => ({ ...r, profile: { ...r.profile, name: e.target.value } }))
+                        }
+                      />
+                    </Grid>
+                    <Grid>
+                      <TextField
+                        label="아바타 URL"
+                        fullWidth
+                        value={resume.profile?.avatarUrl || ""}
+                        onChange={(e) =>
+                          setResume((r: any) => ({ ...r, profile: { ...r.profile, avatarUrl: e.target.value } }))
+                        }
+                      />
+                    </Grid>
+                    <Grid>
+                      <TextField
+                        label="이메일"
+                        value={resume.profile?.contact?.email || ""}
+                        onChange={(e) =>
+                          setResume((r: any) => ({ ...r, profile: { ...r.profile, contact: { ...r.profile?.contact, email: e.target.value } },
+                          }))
+                        }
+                      />
+                    </Grid>
+                    <Grid>
+                      <TextField
+                        label="전화번호"
+                        value={resume.profile?.contact?.phone || ""}
+                        onChange={(e) =>
+                          setResume((r: any) => ({ ...r, profile: { ...r.profile, contact: { ...r.profile?.contact, phone: e.target.value } },
+                          }))
+                        }
+                      />
+                    </Grid>
                   </Grid>
-                  <Grid>
+                  <Grid size={16}>
                     <TextField
-                      label="아바타 URL"
+                      label="소개"
                       fullWidth
-                      value={resume.profile?.avatarUrl || ""}
+                      multiline
+                      minRows={2}
+                      value={resume.profile?.intro || ""}
                       onChange={(e) =>
-                        setResume((r: any) => ({ ...r, profile: { ...r.profile, avatarUrl: e.target.value } }))
-                      }
-                    />
-                  </Grid>
-                  <Grid>
-                    <TextField
-                      label="이메일"
-                      value={resume.profile?.contact?.email || ""}
-                      onChange={(e) =>
-                        setResume((r: any) => ({ ...r, profile: { ...r.profile, contact: { ...r.profile?.contact, email: e.target.value } },
-                        }))
-                      }
-                    />
-                  </Grid>
-                  <Grid>
-                    <TextField
-                      label="전화번호"
-                      value={resume.profile?.contact?.phone || ""}
-                      onChange={(e) =>
-                        setResume((r: any) => ({ ...r, profile: { ...r.profile, contact: { ...r.profile?.contact, phone: e.target.value } },
-                        }))
+                        setResume((r: any) => ({ ...r, profile: { ...r.profile, intro: e.target.value } }))
                       }
                     />
                   </Grid>
                 </Grid>
-                <Grid size={16}>
-                  <TextField
-                    label="소개"
-                    fullWidth
-                    multiline
-                    minRows={2}
-                    value={resume.profile?.intro || ""}
-                    onChange={(e) =>
-                      setResume((r: any) => ({ ...r, profile: { ...r.profile, intro: e.target.value } }))
-                    }
-                  />
-                </Grid>
-              </Grid>
-            </CardContent>
-          </Card>
-        </Grid>
+              </CardContent>
+            </Card>
+          </Grid>
 
-        {/* 타임라인 */}
-        <Grid>
-          <Card>
-            <CardContent>
-              <SectionHeader
-                title="타임라인"
-                onSave={() => patchSection({ timeline: resume.timeline })}
-                onAdd={() =>
-                  setResume((r: any) => ({ ...r, timeline: [...(r.timeline || []), emptyTimelineItem()] }))
-                }
-              />
-              <Stack spacing={2}>
-                {(resume.timeline || []).map((item: any, idx: number) => (
-                  <Card key={idx} variant="outlined">
-                    <CardContent>
-                      <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
-                        <Typography variant="subtitle1" fontWeight="bold">
-                          항목 #{idx + 1}
-                        </Typography>
-                        <Stack direction="row" spacing={1}>
+          {/* 타임라인 */}
+          <Grid>
+            <Card>
+              <CardContent>
+                <SectionHeader
+                  title="타임라인"
+                  onSave={() => patchSection({ timeline: resume.timeline })}
+                  onAdd={() =>
+                    setResume((r: any) => ({ ...r, timeline: [...(r.timeline || []), emptyTimelineItem()] }))
+                  }
+                />
+                <Stack spacing={2}>
+                  {(resume.timeline || []).map((item: any, idx: number) => (
+                    <Card key={idx} variant="outlined">
+                      <CardContent>
+                        <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
+                          <Typography variant="subtitle1" fontWeight="bold">
+                            항목 #{idx + 1}
+                          </Typography>
+                          <Stack direction="row" spacing={1}>
+                            <Button
+                              size="small"
+                              color="error"
+                              onClick={() =>
+                                setResume((r: any) => ({
+                                  ...r,
+                                  timeline: (r.timeline || []).filter((_: any, i: number) => i !== idx),
+                                }))
+                              }
+                            >
+                              삭제
+                            </Button>
+                          </Stack>
+                        </Box>
+                        <Grid container spacing={2}>
+                          <Grid >
+                            <Select
+                              fullWidth
+                              value={item.type || "experience"}
+                              onChange={(e) =>
+                                setResume((r: any) => {
+                                  const t = [...(r.timeline || [])];
+                                  t[idx] = { ...t[idx], type: e.target.value };
+                                  return { ...r, timeline: t };
+                                })
+                              }
+                            >
+                              <MenuItem value="experience">experience</MenuItem>
+                              <MenuItem value="education">education</MenuItem>
+                              <MenuItem value="military">military</MenuItem>
+                            </Select>
+                          </Grid>
+                          <Grid size={3}>
+                            <TextField
+                              label="제목"
+                              fullWidth
+                              value={item.title || ""}
+                              onChange={(e) =>
+                                setResume((r: any) => {
+                                  const t = [...(r.timeline || [])];
+                                  t[idx] = { ...t[idx], title: e.target.value };
+                                  return { ...r, timeline: t };
+                                })
+                              }
+                            />
+                          </Grid>
+
+                          <Grid size={2.3}>
+                            <TextField
+                              label="시작일"
+                              type="date"
+                              fullWidth
+                              value={item.start || ""}
+                              slotProps={{ inputLabel: { shrink: true } }}
+                              onChange={(e) =>
+                                setResume((r: any) => {
+                                  const t = [...(r.timeline || [])];
+                                  t[idx] = { ...t[idx], start: e.target.value };
+                                  return { ...r, timeline: t };
+                                })
+                              }
+                            />
+                          </Grid>
+
+                          <Grid size={2.3}>
+                            <TextField
+                              label="종료일"
+                              type="date"
+                              fullWidth
+                              disabled={!!item.current}
+                              value={item.end || ""}
+                              slotProps={{ inputLabel: { shrink: true } }}
+                              inputProps={{ min: item.start || undefined }}
+                              onChange={(e) =>
+                                setResume((r: any) => {
+                                  const t = [...(r.timeline || [])];
+                                  t[idx] = { ...t[idx], end: e.target.value };
+                                  return { ...r, timeline: t };
+                                })
+                              }
+                            />
+                          </Grid>
+                          <Grid >
+                            <FormControlLabel
+                              control={
+                                <Checkbox
+                                  checked={!!item.current}
+                                  onChange={(e) =>
+                                    setResume((r: any) => {
+                                      const t = [...(r.timeline || [])];
+                                      t[idx] = {
+                                        ...t[idx],
+                                        current: e.target.checked,
+                                        end: e.target.checked ? "" : t[idx].end,
+                                      };
+                                      return { ...r, timeline: t };
+                                    })
+                                  }
+                                />
+                              }
+                              label="재직/진행중"
+                            />
+                          </Grid>
+                        </Grid>
+                        <Stack spacing={2} mt={2}>
+                          <Grid >
+                            <TextField
+                              label="요약"
+                              fullWidth
+                              value={item.summary || ""}
+                              onChange={(e) =>
+                                setResume((r: any) => {
+                                  const t = [...(r.timeline || [])];
+                                  t[idx] = { ...t[idx], summary: e.target.value };
+                                  return { ...r, timeline: t };
+                                })
+                              } 
+                            />
+                          </Grid>
+                          <Grid>
+                            <TextField
+                              label="상세"
+                              fullWidth
+                              multiline
+                              minRows={3}
+                              value={item.detail || ""}
+                              onChange={(e) =>
+                                setResume((r: any) => {
+                                  const t = [...(r.timeline || [])];
+                                  t[idx] = { ...t[idx], detail: e.target.value };
+                                  return { ...r, timeline: t };
+                                })
+                              }
+                            />
+                        </Grid>
+                        </Stack>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </Stack>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          {/* 스킬 */}
+          <Grid>
+            <Card>
+              <CardContent>
+                <SectionHeader
+                  title="스킬"
+                  onSave={() => patchSection({ skills: resume.skills })}
+                  onAdd={() =>
+                    setResume((r: any) => ({ ...r, skills: [...(r.skills || []), emptySkillCategory()] }))
+                  }
+                />
+                <Grid container rowSpacing={2} columnSpacing={2}>
+                  {(resume.skills || []).map((cat: any, cIdx: number) => (
+                    <Card key={cIdx} variant="outlined">
+                      <CardContent>
+                        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+                          <TextField
+                            label="카테고리"
+                            value={cat.category || ""}
+                            onChange={(e) =>
+                              setResume((r: any) => {
+                                const s = [...(r.skills || [])];
+                                s[cIdx] = { ...s[cIdx], category: e.target.value };
+                                return { ...r, skills: s };
+                              })
+                            }
+                          />
                           <Button
                             size="small"
                             color="error"
                             onClick={() =>
                               setResume((r: any) => ({
                                 ...r,
-                                timeline: (r.timeline || []).filter((_: any, i: number) => i !== idx),
+                                skills: (r.skills || []).filter((_: any, i: number) => i !== cIdx),
                               }))
                             }
                           >
-                            삭제
+                            카테고리 삭제
                           </Button>
-                        </Stack>
-                      </Box>
-                      <Grid container spacing={2}>
-                        <Grid >
-                          <Select
-                            fullWidth
-                            value={item.type || "experience"}
-                            onChange={(e) =>
+                        </Box>
+                        <Stack spacing={2}>
+                          {(cat.stacks || []).map((st: any, sIdx: number) => (
+                            <Grid container spacing={1} key={sIdx}>
+                              <Grid size={12}>
+                                <TextField
+                                  label="스택명"
+                                  value={st.name || ""}
+                                  onChange={(e) =>
+                                    setResume((r: any) => {
+                                      const s = [...(r.skills || [])];
+                                      const stacks = [...(s[cIdx].stacks || [])];
+                                      stacks[sIdx] = { ...stacks[sIdx], name: e.target.value };
+                                      s[cIdx] = { ...s[cIdx], stacks };
+                                      return { ...r, skills: s };
+                                    })
+                                  }
+                                />
+                                <Button
+                                  color="error"
+                                  onClick={() =>
+                                    setResume((r: any) => {
+                                      const s = [...(r.skills || [])];
+                                      const stacks = (s[cIdx].stacks || []).filter((_: any, i: number) => i !== sIdx);
+                                      s[cIdx] = { ...s[cIdx], stacks };
+                                      return { ...r, skills: s };
+                                    })
+                                  }
+                                >
+                                  삭제
+                                </Button>
+                              </Grid>
+                              <Grid size={12}>
+                                <TextField
+                                  label="상세"
+                                  multiline
+                                  fullWidth
+                                  minRows={1}
+                                  value={st.detail || ""}
+                                  onChange={(e) =>
+                                    setResume((r: any) => {
+                                      const s = [...(r.skills || [])];
+                                      const stacks = [...(s[cIdx].stacks || [])];
+                                      stacks[sIdx] = { ...stacks[sIdx], detail: e.target.value };
+                                      s[cIdx] = { ...s[cIdx], stacks };
+                                      return { ...r, skills: s };
+                                    })
+                                  }
+                                />
+                              </Grid>
+                            </Grid>
+                          ))}
+                          <Button
+                            startIcon={<AddCircleOutlineIcon />}
+                            onClick={() =>
                               setResume((r: any) => {
-                                const t = [...(r.timeline || [])];
-                                t[idx] = { ...t[idx], type: e.target.value };
-                                return { ...r, timeline: t };
+                                const s = [...(r.skills || [])];
+                                const stacks = [...(s[cIdx].stacks || []), { name: "", detail: "" }];
+                                s[cIdx] = { ...s[cIdx], stacks };
+                                return { ...r, skills: s };
                               })
                             }
                           >
-                            <MenuItem value="experience">experience</MenuItem>
-                            <MenuItem value="education">education</MenuItem>
-                            <MenuItem value="military">military</MenuItem>
-                          </Select>
-                        </Grid>
-                        <Grid size={3}>
-                          <TextField
-                            label="제목"
-                            fullWidth
-                            value={item.title || ""}
-                            onChange={(e) =>
-                              setResume((r: any) => {
-                                const t = [...(r.timeline || [])];
-                                t[idx] = { ...t[idx], title: e.target.value };
-                                return { ...r, timeline: t };
-                              })
-                            }
-                          />
-                        </Grid>
+                            스택 추가
+                          </Button>
+                        </Stack>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </Grid>
+              </CardContent>
+            </Card>
+          </Grid>
 
-                        <Grid size={2.3}>
-                          <TextField
-                            label="시작일"
-                            type="date"
-                            fullWidth
-                            value={item.start || ""}
-                            slotProps={{ inputLabel: { shrink: true } }}
-                            onChange={(e) =>
-                              setResume((r: any) => {
-                                const t = [...(r.timeline || [])];
-                                t[idx] = { ...t[idx], start: e.target.value };
-                                return { ...r, timeline: t };
-                              })
-                            }
-                          />
-                        </Grid>
-
-                        <Grid size={2.3}>
-                          <TextField
-                            label="종료일"
-                            type="date"
-                            fullWidth
-                            disabled={!!item.current}
-                            value={item.end || ""}
-                            slotProps={{ inputLabel: { shrink: true } }}
-                            inputProps={{ min: item.start || undefined }}
-                            onChange={(e) =>
-                              setResume((r: any) => {
-                                const t = [...(r.timeline || [])];
-                                t[idx] = { ...t[idx], end: e.target.value };
-                                return { ...r, timeline: t };
-                              })
-                            }
-                          />
-                        </Grid>
-                        <Grid >
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                checked={!!item.current}
-                                onChange={(e) =>
-                                  setResume((r: any) => {
-                                    const t = [...(r.timeline || [])];
-                                    t[idx] = {
-                                      ...t[idx],
-                                      current: e.target.checked,
-                                      end: e.target.checked ? "" : t[idx].end,
-                                    };
-                                    return { ...r, timeline: t };
-                                  })
-                                }
-                              />
-                            }
-                            label="재직/진행중"
-                          />
-                        </Grid>
-                      </Grid>
-                      <Stack spacing={2} mt={2}>
-                        <Grid >
-                          <TextField
-                            label="요약"
-                            fullWidth
-                            value={item.summary || ""}
-                            onChange={(e) =>
-                              setResume((r: any) => {
-                                const t = [...(r.timeline || [])];
-                                t[idx] = { ...t[idx], summary: e.target.value };
-                                return { ...r, timeline: t };
-                              })
-                            } 
-                          />
-                        </Grid>
-                        <Grid>
-                          <TextField
-                            label="상세"
-                            fullWidth
-                            multiline
-                            minRows={3}
-                            value={item.detail || ""}
-                            onChange={(e) =>
-                              setResume((r: any) => {
-                                const t = [...(r.timeline || [])];
-                                t[idx] = { ...t[idx], detail: e.target.value };
-                                return { ...r, timeline: t };
-                              })
-                            }
-                          />
-                      </Grid>
-                      </Stack>
-                    </CardContent>
-                  </Card>
-                ))}
-              </Stack>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* 스킬 */}
-        <Grid>
-          <Card>
-            <CardContent>
-              <SectionHeader
-                title="스킬"
-                onSave={() => patchSection({ skills: resume.skills })}
-                onAdd={() =>
-                  setResume((r: any) => ({ ...r, skills: [...(r.skills || []), emptySkillCategory()] }))
-                }
-              />
-              <Grid container rowSpacing={2} columnSpacing={2}>
-                {(resume.skills || []).map((cat: any, cIdx: number) => (
-                  <Card key={cIdx} variant="outlined">
-                    <CardContent>
-                      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+          {/* 자격/어학 */}
+          <Grid>
+            <Card>
+              <CardContent>
+                <SectionHeader
+                  title="자격 / 어학"
+                  onSave={() => patchSection({ certifications: resume.certifications })}
+                  onAdd={() =>
+                    setResume((r: any) => ({
+                      ...r,
+                      certifications: [...(r.certifications || []), emptyCertification()],
+                    }))
+                  }
+                />
+                <Stack spacing={2}>
+                  {(resume.certifications || []).map((cert: any, idx: number) => (
+                    <Grid container spacing={2} key={idx} alignItems="center">
+                      <Grid >
                         <TextField
-                          label="카테고리"
-                          value={cat.category || ""}
+                          label="자격명"
+                          fullWidth
+                          value={cert.name || ""}
                           onChange={(e) =>
                             setResume((r: any) => {
-                              const s = [...(r.skills || [])];
-                              s[cIdx] = { ...s[cIdx], category: e.target.value };
-                              return { ...r, skills: s };
+                              const list = [...(r.certifications || [])];
+                              list[idx] = { ...list[idx], name: e.target.value };
+                              return { ...r, certifications: list };
                             })
                           }
                         />
+                      </Grid>
+                      <Grid >
+                        <TextField
+                          label="발급기관"
+                          fullWidth
+                          value={cert.organization || ""}
+                          onChange={(e) =>
+                            setResume((r: any) => {
+                              const list = [...(r.certifications || [])];
+                              list[idx] = { ...list[idx], organization: e.target.value };
+                              return { ...r, certifications: list };
+                            })
+                          }
+                        />
+                      </Grid>
+                      <Grid >
+                        <TextField
+                          label="취득일"
+                          fullWidth
+                          value={cert.date || ""}
+                          onChange={(e) =>
+                            setResume((r: any) => {
+                              const list = [...(r.certifications || [])];
+                              list[idx] = { ...list[idx], date: e.target.value };
+                              return { ...r, certifications: list };
+                            })
+                          }
+                        />
+                      </Grid>
+                      <Grid >
+                        <TextField
+                          label="번호"
+                          fullWidth
+                          value={cert.number || ""}
+                          onChange={(e) =>
+                            setResume((r: any) => {
+                              const list = [...(r.certifications || [])];
+                              list[idx] = { ...list[idx], number: e.target.value };
+                              return { ...r, certifications: list };
+                            })
+                          }
+                        />
+                      </Grid>
+                      <Grid >
                         <Button
-                          size="small"
                           color="error"
                           onClick={() =>
                             setResume((r: any) => ({
                               ...r,
-                              skills: (r.skills || []).filter((_: any, i: number) => i !== cIdx),
+                              certifications: (r.certifications || []).filter((_: any, i: number) => i !== idx),
                             }))
                           }
                         >
-                          카테고리 삭제
+                          삭제
                         </Button>
-                      </Box>
-                      <Stack spacing={2}>
-                        {(cat.stacks || []).map((st: any, sIdx: number) => (
-                          <Grid container spacing={1} key={sIdx}>
-                            <Grid size={12}>
-                              <TextField
-                                label="스택명"
-                                value={st.name || ""}
-                                onChange={(e) =>
-                                  setResume((r: any) => {
-                                    const s = [...(r.skills || [])];
-                                    const stacks = [...(s[cIdx].stacks || [])];
-                                    stacks[sIdx] = { ...stacks[sIdx], name: e.target.value };
-                                    s[cIdx] = { ...s[cIdx], stacks };
-                                    return { ...r, skills: s };
-                                  })
-                                }
-                              />
-                              <Button
-                                color="error"
-                                onClick={() =>
-                                  setResume((r: any) => {
-                                    const s = [...(r.skills || [])];
-                                    const stacks = (s[cIdx].stacks || []).filter((_: any, i: number) => i !== sIdx);
-                                    s[cIdx] = { ...s[cIdx], stacks };
-                                    return { ...r, skills: s };
-                                  })
-                                }
-                              >
-                                삭제
-                              </Button>
-                            </Grid>
-                            <Grid size={12}>
-                              <TextField
-                                label="상세"
-                                multiline
-                                fullWidth
-                                minRows={1}
-                                value={st.detail || ""}
-                                onChange={(e) =>
-                                  setResume((r: any) => {
-                                    const s = [...(r.skills || [])];
-                                    const stacks = [...(s[cIdx].stacks || [])];
-                                    stacks[sIdx] = { ...stacks[sIdx], detail: e.target.value };
-                                    s[cIdx] = { ...s[cIdx], stacks };
-                                    return { ...r, skills: s };
-                                  })
-                                }
-                              />
-                            </Grid>
+                      </Grid>
+                    </Grid>
+                  ))}
+                </Stack>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          {/* 추가사항 */}
+          <Grid>
+            <Card>
+              <CardContent>
+                <SectionHeader
+                  title="추가사항"
+                  onSave={() => patchSection({ extra: resume.extra })}
+                  onAdd={() =>
+                    setResume((r: any) => ({ ...r, extra: [...(r.extra || []), emptyExtra()] }))
+                  }
+                />
+                <Stack spacing={2}>
+                  {(resume.extra || []).map((ex: any, idx: number) => (
+                    <Card key={idx} variant="outlined">
+                      <CardContent>
+                        <Grid container spacing={2} alignItems="center">
+                            <TextField
+                              label="제목"
+                              value={ex.title || ""}
+                              onChange={(e) =>
+                                setResume((r: any) => {
+                                  const list = [...(r.extra || [])];
+                                  list[idx] = { ...list[idx], title: e.target.value };
+                                  return { ...r, extra: list };
+                                })
+                              }
+                            />
+                            <Button
+                              color="error"
+                              onClick={() =>
+                                setResume((r: any) => ({
+                                  ...r,
+                                  extra: (r.extra || []).filter((_: any, i: number) => i !== idx),
+                                }))
+                              }
+                            >
+                              삭제
+                            </Button>
+                            <TextField
+                              label="내용"
+                              fullWidth
+                              multiline
+                              minRows={2}
+                              value={ex.content || ""}
+                              onChange={(e) =>
+                                setResume((r: any) => {
+                                  const list = [...(r.extra || [])];
+                                  list[idx] = { ...list[idx], content: e.target.value };
+                                  return { ...r, extra: list };
+                                })
+                              }
+                            />
+                        </Grid>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </Stack>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+      </TabPanel>
+
+      <TabPanel value={tabValue} index={1}>
+        <Grid container spacing={3}>
+          {/* 경력기술서 */}
+          <Grid>
+            <Card>
+              <CardContent>
+                <SectionHeader
+                  title="경력기술서"
+                  onSave={() => patchSection({ projects: resume.projects })}
+                  onAdd={() =>
+                    setResume((r: any) => ({
+                      ...r,
+                      projects: [...(r.projects || []), emptyProject()],
+                    }))
+                  }
+                />
+                <Stack spacing={2}>
+                  {(resume.projects || []).map((item: any, idx: number) => (
+                    <Card key={idx} variant="outlined">
+                      <CardContent>
+                        <Grid container spacing={2} alignItems="center">
+                          <Grid>
+                            <TextField
+                              label="프로젝트명"
+                              value={item.title || ""}
+                              onChange={(e) =>
+                                setResume((r: any) => {
+                                  const list = [...(r.projects || [])];
+                                  list[idx] = { ...list[idx], title: e.target.value };
+                                  return { ...r, projects: list };
+                                })
+                              }
+                            />
                           </Grid>
-                        ))}
-                        <Button
-                          startIcon={<AddCircleOutlineIcon />}
-                          onClick={() =>
+                          <Grid>
+                            <TextField
+                              label="시작일"
+                              type="date"
+                              value={item.start || ""}
+                              onChange={(e) =>
+                                setResume((r: any) => {
+                                  const list = [...(r.projects || [])];
+                                  list[idx] = { ...list[idx], start: e.target.value };
+                                  return { ...r, projects: list };
+                                })
+                              }
+                              InputLabelProps={{ shrink: true }}
+                            />
+                          </Grid>
+                          <Grid>
+                            <TextField
+                              label="종료일"
+                              type="date"
+                              value={item.end || ""}
+                              onChange={(e) =>
+                                setResume((r: any) => {
+                                  const list = [...(r.projects || [])];
+                                  list[idx] = { ...list[idx], end: e.target.value };
+                                  return { ...r, projects: list };
+                                })
+                              }
+                              InputLabelProps={{ shrink: true }}
+                            />
+                          </Grid>
+                          <Grid>
+                            <Button
+                              color="error"
+                              onClick={() =>
+                                setResume((r: any) => ({
+                                  ...r,
+                                  projects: (r.projects || []).filter((_: any, i: number) => i !== idx),
+                                }))
+                              }
+                            >
+                              삭제
+                            </Button>
+                          </Grid>
+                        </Grid>
+                        <TextField
+                          label="담당 역할"
+                          fullWidth
+                          value={item.role || ""}
+                          onChange={(e) =>
                             setResume((r: any) => {
-                              const s = [...(r.skills || [])];
-                              const stacks = [...(s[cIdx].stacks || []), { name: "", detail: "" }];
-                              s[cIdx] = { ...s[cIdx], stacks };
-                              return { ...r, skills: s };
+                              const list = [...(r.projects || [])];
+                              list[idx] = { ...list[idx], role: e.target.value };
+                              return { ...r, projects: list };
                             })
                           }
-                        >
-                          스택 추가
-                        </Button>
-                      </Stack>
-                    </CardContent>
-                  </Card>
-                ))}
-              </Grid>
-            </CardContent>
-          </Card>
+                          sx={{ mt: 1 }}
+                        />
+                        <TextField
+                          label="프로젝트 개요"
+                          fullWidth
+                          multiline
+                          minRows={2}
+                          value={item.description || ""}
+                          onChange={(e) =>
+                            setResume((r: any) => {
+                              const list = [...(r.projects || [])];
+                              list[idx] = { ...list[idx], description: e.target.value };
+                              return { ...r, projects: list };
+                            })
+                          }
+                          sx={{ mt: 1 }}
+                        />
+                        <Box mt={1}>
+                          <Typography variant="subtitle2" fontWeight="bold">
+                            기술 스택
+                          </Typography>
+                          <Stack direction="row" spacing={1} flexWrap="wrap" mt={1}>
+                            {(item.skills || []).map((skill: string, sIdx: number) => (
+                              <Box key={sIdx} display="flex" alignItems="center" gap={1}>
+                                <TextField
+                                  label={`스킬${sIdx + 1}`}
+                                  value={skill}
+                                  size="small"
+                                  onChange={(e) =>
+                                    setResume((r: any) => {
+                                      const list = [...(r.projects || [])];
+                                      const skills = [...(list[idx].skills || [])];
+                                      skills[sIdx] = e.target.value;
+                                      list[idx] = { ...list[idx], skills };
+                                      return { ...r, projects: list };
+                                    })
+                                  }
+                                />
+                                <Button
+                                  color="error"
+                                  size="small"
+                                  onClick={() =>
+                                    setResume((r: any) => {
+                                      const list = [...(r.projects || [])];
+                                      const skills = (list[idx].skills || []).filter((_: any, i: number) => i !== sIdx);
+                                      list[idx] = { ...list[idx], skills };
+                                      return { ...r, projects: list };
+                                    })
+                                  }
+                                >
+                                  삭제
+                                </Button>
+                              </Box>
+                            ))}
+                            <Button
+                              size="small"
+                              startIcon={<AddCircleOutlineIcon />}
+                              onClick={() =>
+                                setResume((r: any) => {
+                                  const list = [...(r.projects || [])];
+                                  const skills = [...(list[idx].skills || []), ""];
+                                  list[idx] = { ...list[idx], skills };
+                                  return { ...r, projects: list };
+                                })
+                              }
+                            >
+                              스킬 추가
+                            </Button>
+                          </Stack>
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </Stack>
+              </CardContent>
+            </Card>
+          </Grid>
         </Grid>
+      </TabPanel>
 
-        {/* 자격/어학 */}
-        <Grid>
-          <Card>
-            <CardContent>
-              <SectionHeader
-                title="자격 / 어학"
-                onSave={() => patchSection({ certifications: resume.certifications })}
-                onAdd={() =>
-                  setResume((r: any) => ({
-                    ...r,
-                    certifications: [...(r.certifications || []), emptyCertification()],
-                  }))
-                }
-              />
-              <Stack spacing={2}>
-                {(resume.certifications || []).map((cert: any, idx: number) => (
-                  <Grid container spacing={2} key={idx} alignItems="center">
-                    <Grid >
-                      <TextField
-                        label="자격명"
-                        fullWidth
-                        value={cert.name || ""}
-                        onChange={(e) =>
-                          setResume((r: any) => {
-                            const list = [...(r.certifications || [])];
-                            list[idx] = { ...list[idx], name: e.target.value };
-                            return { ...r, certifications: list };
-                          })
-                        }
-                      />
-                    </Grid>
-                    <Grid >
-                      <TextField
-                        label="발급기관"
-                        fullWidth
-                        value={cert.organization || ""}
-                        onChange={(e) =>
-                          setResume((r: any) => {
-                            const list = [...(r.certifications || [])];
-                            list[idx] = { ...list[idx], organization: e.target.value };
-                            return { ...r, certifications: list };
-                          })
-                        }
-                      />
-                    </Grid>
-                    <Grid >
-                      <TextField
-                        label="취득일"
-                        fullWidth
-                        value={cert.date || ""}
-                        onChange={(e) =>
-                          setResume((r: any) => {
-                            const list = [...(r.certifications || [])];
-                            list[idx] = { ...list[idx], date: e.target.value };
-                            return { ...r, certifications: list };
-                          })
-                        }
-                      />
-                    </Grid>
-                    <Grid >
-                      <TextField
-                        label="번호"
-                        fullWidth
-                        value={cert.number || ""}
-                        onChange={(e) =>
-                          setResume((r: any) => {
-                            const list = [...(r.certifications || [])];
-                            list[idx] = { ...list[idx], number: e.target.value };
-                            return { ...r, certifications: list };
-                          })
-                        }
-                      />
-                    </Grid>
-                    <Grid >
-                      <Button
-                        color="error"
-                        onClick={() =>
-                          setResume((r: any) => ({
-                            ...r,
-                            certifications: (r.certifications || []).filter((_: any, i: number) => i !== idx),
-                          }))
-                        }
-                      >
-                        삭제
-                      </Button>
-                    </Grid>
-                  </Grid>
-                ))}
-              </Stack>
-            </CardContent>
-          </Card>
+      <TabPanel value={tabValue} index={2}>
+        <Grid container spacing={3}>
+          {/* 포트폴리오 */}
+          <Grid>
+            <Card>
+              <CardContent>
+                <SectionHeader
+                  title="포트폴리오"
+                  onSave={() => patchSection({ portfolio: resume.portfolio })}
+                  onAdd={() =>
+                    setResume((r: any) => ({
+                      ...r,
+                      portfolio: [...(r.portfolio || []), emptyPortfolio()],
+                    }))
+                  }
+                />
+                <Stack spacing={2}>
+                  {(resume.portfolio || []).map((item: any, idx: number) => (
+                    <Card key={idx} variant="outlined">
+                      <CardContent>
+                        <Grid container spacing={2} alignItems="center">
+                          <Grid>
+                            <TextField
+                              label="제목"
+                              value={item.title || ""}
+                              onChange={(e) =>
+                                setResume((r: any) => {
+                                  const list = [...(r.portfolio || [])];
+                                  list[idx] = { ...list[idx], title: e.target.value };
+                                  return { ...r, portfolio: list };
+                                })
+                              }
+                            />
+                          </Grid>
+                          <Grid>
+                            <TextField
+                              label="시작일"
+                              type="date"
+                              value={item.start || ""}
+                              onChange={(e) =>
+                                setResume((r: any) => {
+                                  const list = [...(r.portfolio || [])];
+                                  list[idx] = { ...list[idx], start: e.target.value };
+                                  return { ...r, portfolio: list };
+                                })
+                              }
+                              InputLabelProps={{ shrink: true }}
+                            />
+                          </Grid>
+                          <Grid>
+                            <TextField
+                              label="종료일"
+                              type="date"
+                              value={item.end || ""}
+                              onChange={(e) =>
+                                setResume((r: any) => {
+                                  const list = [...(r.portfolio || [])];
+                                  list[idx] = { ...list[idx], end: e.target.value };
+                                  return { ...r, portfolio: list };
+                                })
+                              }
+                              InputLabelProps={{ shrink: true }}
+                            />
+                          </Grid>
+                          <Grid>
+                            <Button
+                              color="error"
+                              onClick={() =>
+                                setResume((r: any) => ({
+                                  ...r,
+                                  portfolio: (r.portfolio || []).filter((_: any, i: number) => i !== idx),
+                                }))
+                              }
+                            >
+                              삭제
+                            </Button>
+                          </Grid>
+                        </Grid>
+                        <TextField
+                          label="담당 역할"
+                          fullWidth
+                          value={item.role || ""}
+                          onChange={(e) =>
+                            setResume((r: any) => {
+                              const list = [...(r.portfolio || [])];
+                              list[idx] = { ...list[idx], role: e.target.value };
+                              return { ...r, portfolio: list };
+                            })
+                          }
+                          sx={{ mt: 1 }}
+                        />
+                        <TextField
+                          label="설명"
+                          fullWidth
+                          multiline
+                          minRows={2}
+                          value={item.description || ""}
+                          onChange={(e) =>
+                            setResume((r: any) => {
+                              const list = [...(r.portfolio || [])];
+                              list[idx] = { ...list[idx], description: e.target.value };
+                              return { ...r, portfolio: list };
+                            })
+                          }
+                          sx={{ mt: 1 }}
+                        />
+                        <TextField
+                          label="URL"
+                          fullWidth
+                          value={item.url || ""}
+                          onChange={(e) =>
+                            setResume((r: any) => {
+                              const list = [...(r.portfolio || [])];
+                              list[idx] = { ...list[idx], url: e.target.value };
+                              return { ...r, portfolio: list };
+                            })
+                          }
+                          sx={{ mt: 1 }}
+                        />
+                      </CardContent>
+                    </Card>
+                  ))}
+                </Stack>
+              </CardContent>
+            </Card>
+          </Grid>
         </Grid>
+      </TabPanel>
 
-        {/* 추가사항 */}
-        <Grid>
-          <Card>
-            <CardContent>
-              <SectionHeader
-                title="추가사항"
-                onSave={() => patchSection({ extra: resume.extra })}
-                onAdd={() =>
-                  setResume((r: any) => ({ ...r, extra: [...(r.extra || []), emptyExtra()] }))
-                }
-              />
-              <Stack spacing={2}>
-                {(resume.extra || []).map((ex: any, idx: number) => (
-                  <Card key={idx} variant="outlined">
-                    <CardContent>
-                      <Grid container spacing={2} alignItems="center">
-                          <TextField
-                            label="제목"
-                            value={ex.title || ""}
-                            onChange={(e) =>
-                              setResume((r: any) => {
-                                const list = [...(r.extra || [])];
-                                list[idx] = { ...list[idx], title: e.target.value };
-                                return { ...r, extra: list };
-                              })
-                            }
-                          />
-                          <Button
-                            color="error"
-                            onClick={() =>
-                              setResume((r: any) => ({
-                                ...r,
-                                extra: (r.extra || []).filter((_: any, i: number) => i !== idx),
-                              }))
-                            }
-                          >
-                            삭제
-                          </Button>
-                          <TextField
-                            label="내용"
-                            fullWidth
-                            multiline
-                            minRows={2}
-                            value={ex.content || ""}
-                            onChange={(e) =>
-                              setResume((r: any) => {
-                                const list = [...(r.extra || [])];
-                                list[idx] = { ...list[idx], content: e.target.value };
-                                return { ...r, extra: list };
-                              })
-                            }
-                          />
-                      </Grid>
-                    </CardContent>
-                  </Card>
-                ))}
-              </Stack>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* 하단 액션 */}
-        <Grid>
-          <Divider sx={{ my: 1 }} />
-          <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
-            <Button
-              variant="outlined"
-              startIcon={<CleaningServicesIcon />}
-              onClick={() => setResume(DEFAULT_RESUME)}
-            >
-              기본 스키마
-            </Button>
-            <Box flex={1} />
-            <Button
-              color="primary"
-              variant="contained"
-              startIcon={<SaveIcon />}
-              onClick={saveAllPut}
-            >
-              전체 저장(PUT)
-            </Button>
-          </Stack>
-        </Grid>
+      {/* 하단 액션 */}
+      <Grid>
+        <Divider sx={{ my: 1 }} />
+        <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
+          <Button
+            variant="outlined"
+            startIcon={<CleaningServicesIcon />}
+            onClick={() => setResume(DEFAULT_RESUME)}
+          >
+            기본 스키마
+          </Button>
+          <Box flex={1} />
+          <Button
+            color="primary"
+            variant="contained"
+            startIcon={<SaveIcon />}
+            onClick={saveAllPut}
+          >
+            전체 저장(PUT)
+          </Button>
+        </Stack>
       </Grid>
 
       <Snackbar
