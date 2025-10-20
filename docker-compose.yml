@@ -4,12 +4,17 @@ services:
   mongo:
     image: mongo:7
     restart: unless-stopped
+    stop_grace_period: 60s
+    ulimits:
+      nofile:
+        soft: 64000
+        hard: 64000
     ports:
       - "27017:27017"
     environment:
       MONGO_INITDB_DATABASE: resume_db
     volumes:
-      - mongo_data:/data/db
+      - ./data/db:/data/db
     healthcheck:
       test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
       interval: 10s
