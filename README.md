@@ -1,27 +1,36 @@
-# 포동포동 달력 (Calendar)
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## 목적
-이 리포지토리는 포동포동 사진 동아리에서 제작한 사진 달력을 웹으로 전시하고, 차년도 달력 제작을 위한 사진 접수 과정을 지원하기 위해 설계되었습니다.
+## Getting Started
 
-주요 목적:
-- 연도별·월별 달력 뷰 제공
-- 각 사진에 메타데이터(촬영 위치, 촬영 시각, 카메라, ISO/셔터스피드/조리개 등)와 촬영자 정보를 표시
-- 사진 접수(업로드) 기능 제공 — 차기 달력 제작용
+First, run the development server:
 
-## 주요 기능
-- 달력 탐색: 연도/월 단위로 사진을 조회
-- 상세 정보: 사진 클릭 시 메타데이터 및 촬영자 정보 표시
-- 사진 업로드: 업로드 폼(메타데이터 입력 포함) -> 구글폼을 활용하여 링크만 안내.
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
-## 저장소 구조 (간략)
-- `calendar/` — 이 프로젝트의 클라이언트/문서
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## 설치 및 실행 (개발 환경)
-1. 레포지토리 복제
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-	 git clone <REPO_URL>
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-2. 이 후 과정은 구체적인 스택 설정 후 작성
+## Learn More
 
-## 라이선스
-- MIT
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
