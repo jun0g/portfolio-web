@@ -105,12 +105,9 @@ export default function CareerPage() {
         <Stack direction="row" spacing={4} alignItems="center">
           <Avatar src={profile?.photo || '/profile.jpg'} sx={{ width: 80, height: 80 }} />
           <Box>
-            <Typography variant="h5" sx={{ fontWeight: 700, fontSize: 18, color: '#111' }}>{profile?.name}</Typography>
-            <Typography sx={{ fontSize: 12, color: '#666', mt: 0.5 }}>{profile?.introduction}</Typography>
-            <Stack direction="row" spacing={2} mt={1}>
-              <Typography sx={{ fontSize: 10, color: '#888' }}>{profile?.email}</Typography>
-              <Typography sx={{ fontSize: 10, color: '#888' }}>{profile?.phone_number}</Typography>
-            </Stack>
+            <Typography variant="h5" sx={{ fontWeight: 700, fontSize: 26, lineHeight: 1.8, color: '#111' }}>{profile?.name}</Typography>
+            <Typography sx={{ fontSize: 13, color: '#888' }}>📱 {profile?.phone_number}</Typography>
+            <Typography sx={{ fontSize: 13, color: '#888' }}>✉️ {profile?.email}</Typography>
           </Box>
         </Stack>
 
@@ -137,7 +134,7 @@ export default function CareerPage() {
           <Box>
             {/* 간단소개 */}
             <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: 20, color: '#111', mb: 1 }}>간단소개</Typography>
-            <Typography sx={{ mb: 2 }}>{profile?.introduction}</Typography>
+            <Typography sx={{ mb: 2 , whiteSpace: 'pre-wrap', fontSize: 12 }}>{profile?.introduction}</Typography>
 
             {/* 경력 */}
             <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: 20, color: '#111', mb: 1 }}>경력</Typography>
