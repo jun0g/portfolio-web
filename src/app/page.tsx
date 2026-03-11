@@ -196,7 +196,7 @@ export default function CareerPage() {
               {aboutme.map((a, i) => (
                 <Box key={i} sx={{ bgcolor: '#f8fafc', borderRadius: 2, p: 2 }}>
                   <Typography sx={{ fontWeight: 600, fontsize: 17 }}>{a.title}</Typography>
-                  <Typography sx={{ fontSize: 12 }}>{a.content}</Typography>
+                  <Typography sx={{ fontSize: 12, ineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{a.content}</Typography>
                 </Box>
               ))}
             </Stack>
