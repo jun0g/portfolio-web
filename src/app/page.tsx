@@ -169,9 +169,12 @@ export default function CareerPage() {
 
             {/* 기술스택 */}
             <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: 14, color: '#111', mb: 1 }}>기술스택</Typography>
-            <Stack direction="row" spacing={1} mb={2} flexWrap="wrap">
+            <Stack spacing={1} mb={2}>
               {skills.map((s, i) => (
-                <Chip key={i} label={`${s.category}: ${s.skill}`} sx={{ fontSize: 10, bgcolor: '#e3f2fd', color: '#1976d2', mb: 0.5 }} />
+                <Box key={i} sx={{ bgcolor: '#f8fafc', borderRadius: 2, p: 2 }}>
+                  <Typography sx={{ fontWeight: 600 }}>{s.category}</Typography>
+                  <Typography sx={{ fontSize: 11, whiteSpace: 'pre-wrap' }}>{s.skill}</Typography>
+                </Box>
               ))}
             </Stack>
 
@@ -179,7 +182,7 @@ export default function CareerPage() {
             <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: 14, color: '#111', mb: 1 }}>자격증</Typography>
             <Stack spacing={1} mb={2}>
               {certification.map((c, i) => (
-                <Box key={i} sx={{ bgcolor: '#fffde7', borderRadius: 2, p: 2 }}>
+                <Box key={i} sx={{ bgcolor: '#f8fafc', borderRadius: 2, p: 2 }}>
                   <Typography sx={{ fontWeight: 600 }}>{c.name}</Typography>
                   <Typography sx={{ fontSize: 10, color: '#888' }}>{c.issuer} / {c.issue_date} / {c.serial}</Typography>
                 </Box>
