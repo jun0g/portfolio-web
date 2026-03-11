@@ -184,7 +184,7 @@ export default function CareerPage() {
               {certification.map((c, i) => (
                 <Box key={i} sx={{ bgcolor: '#f8fafc', borderRadius: 2, p: 2 }}>
                   <Typography sx={{ fontWeight: 600, fontsize: 17 }}>
-                    {c.name} <span style=={{ fontSize: 11, color: '#888' }}>{c.issuer} / {c.issue_date} / {c.serial}</span>
+                    {c.name} <span style={{ fontSize: 12, color: '#888' }}>{c.issuer} / {c.issue_date} / {c.serial}</span>
                   </Typography>
                 </Box>
               ))}
