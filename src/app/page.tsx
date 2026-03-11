@@ -154,7 +154,7 @@ export default function CareerPage() {
             </Stack>
 
             {/* 학력 및 경험 */}
-            <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: 14, color: '#111', mb: 1 }}>학력 및 경험</Typography>
+            <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: 20, color: '#111', mb: 1 }}>학력 및 경험</Typography>
             <Stack spacing={1} mb={2}>
               {education.map((e, i) => (
                 <Box key={i} sx={{ bgcolor: '#f8fafc', borderRadius: 2, p: 2 }}>
@@ -168,34 +168,35 @@ export default function CareerPage() {
             </Stack>
 
             {/* 기술스택 */}
-            <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: 14, color: '#111', mb: 1 }}>기술스택</Typography>
+            <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: 20, color: '#111', mb: 1 }}>기술스택</Typography>
             <Stack spacing={1} mb={2}>
               {skills.map((s, i) => (
                 <Box key={i} sx={{ bgcolor: '#f8fafc', borderRadius: 2, p: 2 }}>
-                  <Typography sx={{ fontWeight: 600 }}>{s.category}</Typography>
-                  <Typography sx={{ fontSize: 11, whiteSpace: 'pre-wrap' }}>{s.skill}</Typography>
+                  <Typography sx={{ fontWeight: 600, fontsize: 17 }}>{s.category}</Typography>
+                  <Typography sx={{ fontSize: 12, ineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{s.skill}</Typography>
                 </Box>
               ))}
             </Stack>
 
             {/* 자격증 */}
-            <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: 14, color: '#111', mb: 1 }}>자격증</Typography>
+            <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: 20, color: '#111', mb: 1 }}>자격증</Typography>
             <Stack spacing={1} mb={2}>
               {certification.map((c, i) => (
                 <Box key={i} sx={{ bgcolor: '#f8fafc', borderRadius: 2, p: 2 }}>
-                  <Typography sx={{ fontWeight: 600 }}>{c.name}</Typography>
-                  <Typography sx={{ fontSize: 10, color: '#888' }}>{c.issuer} / {c.issue_date} / {c.serial}</Typography>
+                  <Typography sx={{ fontWeight: 600, fontsize: 17 }}>
+                    {c.name} <span style=={{ fontSize: 11, color: '#888' }}>{c.issuer} / {c.issue_date} / {c.serial}</span>
+                  </Typography>
                 </Box>
               ))}
             </Stack>
 
             {/* aboutme */}
-            <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: 14, color: '#111', mb: 1 }}>About Me</Typography>
+            <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: 20, color: '#111', mb: 1 }}>About Me</Typography>
             <Stack spacing={1} mb={2}>
               {aboutme.map((a, i) => (
-                <Box key={i} sx={{ bgcolor: '#e8f5e9', borderRadius: 2, p: 2 }}>
-                  <Typography sx={{ fontWeight: 600 }}>{a.title}</Typography>
-                  <Typography sx={{ fontSize: 11 }}>{a.content}</Typography>
+                <Box key={i} sx={{ bgcolor: '#f8fafc', borderRadius: 2, p: 2 }}>
+                  <Typography sx={{ fontWeight: 600, fontsize: 17 }}>{a.title}</Typography>
+                  <Typography sx={{ fontSize: 12 }}>{a.content}</Typography>
                 </Box>
               ))}
             </Stack>
