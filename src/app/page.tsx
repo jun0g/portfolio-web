@@ -144,9 +144,11 @@ export default function CareerPage() {
             <Stack spacing={1} mb={2}>
               {career.map((c, i) => (
                 <Box key={i} sx={{ bgcolor: '#f8fafc', borderRadius: 2, p: 2 }}>
-                  <Typography sx={{ fontWeight: 600 }}>{c.company} ({c.department}) - {c.position}</Typography>
-                  <Typography sx={{ fontSize: 10, color: '#888' }}>{c.start_date} ~ {c.end_date}</Typography>
-                  <Typography sx={{ fontSize: 11 }}>{c.description}</Typography>
+                  <Typography sx={{ fontWeight: 600, fontSize: 18 }}>
+                    {c.role} <span style={{ fontWeight: 'normal', fontSize: 13 }}> | {c.company} - {c.department} | {c.position}</span>
+                  </Typography>
+                  <Typography sx={{ fontSize: 11, color: '#888' }}> {c.start_date} ~ {c.end_date}</Typography>
+                  <Typography sx={{ fontSize: 12, whiteSpace: 'pre-wrap' }}>{c.description}</Typography>
                 </Box>
               ))}
             </Stack>
