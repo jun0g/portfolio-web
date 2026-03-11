@@ -136,19 +136,19 @@ export default function CareerPage() {
         {section === 'resume' && (
           <Box>
             {/* 간단소개 */}
-            <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: 14, color: '#111', mb: 1 }}>간단소개</Typography>
+            <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: 20, color: '#111', mb: 1 }}>간단소개</Typography>
             <Typography sx={{ mb: 2 }}>{profile?.introduction}</Typography>
 
             {/* 경력 */}
-            <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: 14, color: '#111', mb: 1 }}>경력</Typography>
+            <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: 20, color: '#111', mb: 1 }}>경력</Typography>
             <Stack spacing={1} mb={2}>
               {career.map((c, i) => (
                 <Box key={i} sx={{ bgcolor: '#f8fafc', borderRadius: 2, p: 2 }}>
-                  <Typography sx={{ fontWeight: 600, fontSize: 18 }}>
+                  <Typography sx={{ fontWeight: 600, fontSize: 17 }}>
                     {c.role} <span style={{ fontWeight: 'normal', fontSize: 13 }}> | {c.company} - {c.department} | {c.position}</span>
                   </Typography>
-                  <Typography sx={{ fontSize: 11, color: '#888' }}> {c.start_date} ~ {c.end_date}</Typography>
-                  <Typography sx={{ fontSize: 12, whiteSpace: 'pre-wrap' }}>{c.description}</Typography>
+                  <Typography sx={{ fontSize: 12, color: '#888' }}> {c.start_date} ~ {c.end_date}</Typography>
+                  <Typography sx={{ fontSize: 12, ineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{c.description}</Typography>
                 </Box>
               ))}
             </Stack>
@@ -158,9 +158,11 @@ export default function CareerPage() {
             <Stack spacing={1} mb={2}>
               {education.map((e, i) => (
                 <Box key={i} sx={{ bgcolor: '#f8fafc', borderRadius: 2, p: 2 }}>
-                  <Typography sx={{ fontWeight: 600 }}>{e.institution} - {e.major}</Typography>
-                  <Typography sx={{ fontSize: 10, color: '#888' }}>{e.start_date} ~ {e.end_date}</Typography>
-                  <Typography sx={{ fontSize: 11 }}>{e.description}</Typography>
+                  <Typography sx={{ fontWeight: 600, fontsize: 17 }}>
+                    {e.major} <span style={{ fontWeight: 'normal', fontSize: 13 }}> | {e.institution}</span>
+                  </Typography>
+                  <Typography sx={{ fontSize: 12, color: '#888' }}>{e.start_date} ~ {e.end_date}</Typography>
+                  <Typography sx={{ fontSize: 12, ineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{e.description}</Typography>
                 </Box>
               ))}
             </Stack>
