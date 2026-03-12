@@ -234,12 +234,69 @@ export default function CareerPage() {
             <Stack spacing={1}>
               {projects.map((p, i) => (
                 <Box key={i} sx={{ bgcolor: '#f8fafc', borderRadius: 2, p: 2 }}>
-                  <Typography sx={{ fontWeight: 600, fontSize: 18 }}>{p.title}</Typography>
-                  <Typography sx={{ fontSize: 13, color: '#888' }}>{p.start_date.slice(0,7)} ~ {p.end_date.slice(0,7)}</Typography>
-                  <Typography sx={{ fontSize: 14 }}>개요: {p.overview}</Typography>
-                  <Typography sx={{ fontSize: 14 }}>역할: {p.role}</Typography>
-                  <Typography sx={{ fontSize: 14, color: '#1976d2' }}>관련 스킬: {p.skills}</Typography>
-                  <Typography sx={{ fontSize: 14, color: '#43a047' }}>성과 및 결과: {p.achievements}</Typography>
+
+                  {/* Title + Date */}
+                  <Typography
+                    sx={{
+                      fontWeight: 600,
+                      fontSize: 18,
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <span>{p.title}</span>
+                    <span style={{ fontWeight: 'normal', fontSize: 14, color: '#888' }}>
+                      {p.start_date.slice(0,7)} ~ {p.end_date.slice(0,7)}
+                    </span>
+                  </Typography>
+
+                  {/* 개요 */}
+                  <Box sx={{ mt: 1 }}>
+                    <Typography sx={{ fontSize: 16, fontWeight: 600 }}>개요</Typography>
+                    <Typography sx={{ fontSize: 14, whiteSpace: 'pre-wrap' }}>
+                      {p.overview}
+                    </Typography>
+                  </Box>
+
+                  {/* 역할 */}
+                  <Box sx={{ mt: 1 }}>
+                    <Typography sx={{ fontSize: 16, fontWeight: 600 }}>역할</Typography>
+                    <Typography sx={{ fontSize: 14, whiteSpace: 'pre-wrap' }}>
+                      {p.role}
+                    </Typography>
+                  </Box>
+
+                  {/* 성과 및 결과 */}
+                  <Box sx={{ mt: 1 }}>
+                    <Typography sx={{ fontSize: 16, fontWeight: 600 }}>성과 및 결과</Typography>
+                    <Typography sx={{ fontSize: 14, whiteSpace: 'pre-wrap' }}>
+                      {p.achievements}
+                    </Typography>
+                  </Box>
+
+                  {/* 관련 스킬 */}
+                  <Box sx={{ mt: 1 }}>
+                    <Typography sx={{ fontSize: 16, fontWeight: 600 }}>관련 스킬</Typography>
+
+                    <Stack
+                      direction="row"
+                      spacing={1}
+                      flexWrap="wrap"
+                      sx={{ mt: 0.5 }}
+                    >
+                      {p.skills?.split(',').map((skill: string, idx: number) => (
+                        <Chip
+                          key={idx}
+                          label={skill.trim()}
+                          size="small"
+                          variant="outlined"
+                          sx={{ mb: 0.5 }}
+                        />
+                      ))}
+                    </Stack>
+                  </Box>
+
                 </Box>
               ))}
             </Stack>
