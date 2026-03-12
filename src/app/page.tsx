@@ -316,7 +316,13 @@ export default function CareerPage() {
                         sx={{
                           mb: 1,
                           fontSize: 12,
-                          height: 24
+                          height: 24,
+                          backgroundColor: '#e1f5fe42',
+                          color: '#0277bd',
+                          border: '1px solid #b3e5fc',
+                          '&:hover': {
+                            backgroundColor: '#b3e5fceb'
+                          }
                         }}
                       />
                       ))}
