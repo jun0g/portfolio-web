@@ -230,15 +230,16 @@ export default function CareerPage() {
 
         {section === 'project' && (
           <Box>
-            <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: 14, color: '#111', mb: 2 }}>프로젝트</Typography>
+            <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: 24, color: '#111', mb: 2 }}>프로젝트</Typography>
             <Stack spacing={1}>
               {projects.map((p, i) => (
-                <Box key={i} sx={{ bgcolor: '#e3f2fd', borderRadius: 2, p: 2 }}>
-                  <Typography sx={{ fontWeight: 600 }}>{p.title}</Typography>
-                  <Typography sx={{ fontSize: 10, color: '#888' }}>{p.start_date} ~ {p.end_date}</Typography>
-                  <Typography sx={{ fontSize: 11 }}>{p.overview}</Typography>
-                  <Typography sx={{ fontSize: 11, color: '#1976d2' }}>Skills: {p.skills}</Typography>
-                  <Typography sx={{ fontSize: 11, color: '#43a047' }}>Achievements: {p.achievements}</Typography>
+                <Box key={i} sx={{ bgcolor: '#f8fafc', borderRadius: 2, p: 2 }}>
+                  <Typography sx={{ fontWeight: 600, fontSize: 18 }}>{p.title}</Typography>
+                  <Typography sx={{ fontSize: 13, color: '#888' }}>{p.start_date.slice(0,7)} ~ {p.end_date.slice(0,7)}</Typography>
+                  <Typography sx={{ fontSize: 14 }}>개요: {p.overview}</Typography>
+                  <Typography sx={{ fontSize: 14 }}>역할: {p.role}</Typography>
+                  <Typography sx={{ fontSize: 14, color: '#1976d2' }}>관련 스킬: {p.skills}</Typography>
+                  <Typography sx={{ fontSize: 14, color: '#43a047' }}>성과 및 결과: {p.achievements}</Typography>
                 </Box>
               ))}
             </Stack>
@@ -250,7 +251,7 @@ export default function CareerPage() {
             <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: 14, color: '#111', mb: 2 }}>Work Log</Typography>
             <Stack spacing={1}>
               {work_logs.map((w, i) => (
-                <Box key={i} sx={{ bgcolor: '#fff3e0', borderRadius: 2, p: 2 }}>
+                <Box key={i} sx={{ bgcolor: '#f8fafc', borderRadius: 2, p: 2 }}>
                   <Typography sx={{ fontWeight: 600 }}>{w.title}</Typography>
                   <Typography sx={{ fontSize: 11, color: '#e65100' }}>문제: {w.problem}</Typography>
                   <Typography sx={{ fontSize: 11, color: '#fbc02d' }}>원인: {w.cause}</Typography>
@@ -268,7 +269,7 @@ export default function CareerPage() {
             <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: 14, color: '#111', mb: 2 }}>Lab</Typography>
             <Stack spacing={1}>
               {labs.map((l, i) => (
-                <Box key={i} sx={{ bgcolor: '#ffe0b2', borderRadius: 2, p: 2 }}>
+                <Box key={i} sx={{ bgcolor: '#f8fafc', borderRadius: 2, p: 2 }}>
                   <Typography sx={{ fontWeight: 600 }}>{l.title}</Typography>
                   <Typography sx={{ fontSize: 11, color: '#1976d2' }}>목적: {l.purpose}</Typography>
                   <Typography sx={{ fontSize: 11, color: '#43a047' }}>환경: {l.environment}</Typography>
