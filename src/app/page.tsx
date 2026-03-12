@@ -239,7 +239,7 @@ export default function CareerPage() {
                   <Typography
                     sx={{
                       fontWeight: 600,
-                      fontSize: 18,
+                      fontSize: 20,
                       display: 'flex',
                       justifyContent: 'space-between',
                       alignItems: 'center'
@@ -247,13 +247,13 @@ export default function CareerPage() {
                   >
                     <span>{p.title}</span>
                     <span style={{ fontWeight: 'normal', fontSize: 14, color: '#888' }}>
-                      {p.start_date.slice(0,7)} ~ {p.end_date.slice(0,7)}
+                      {p.start_date.slice(0,7)} ~ {p.end_date.slice(0,7)} ({formatMonths(p.months)})
                     </span>
                   </Typography>
 
                   {/* 개요 */}
                   <Box sx={{ mt: 1 }}>
-                    <Typography sx={{ fontSize: 16, fontWeight: 600 }}>개요</Typography>
+                    <Typography sx={{ fontSize: 18, fontWeight: 600 }}>개요</Typography>
                     <Typography sx={{ fontSize: 14, whiteSpace: 'pre-wrap' }}>
                       {p.overview}
                     </Typography>
@@ -261,7 +261,7 @@ export default function CareerPage() {
 
                   {/* 역할 */}
                   <Box sx={{ mt: 1 }}>
-                    <Typography sx={{ fontSize: 16, fontWeight: 600 }}>역할</Typography>
+                    <Typography sx={{ fontSize: 18, fontWeight: 600 }}>역할</Typography>
                     <Typography sx={{ fontSize: 14, whiteSpace: 'pre-wrap' }}>
                       {p.role}
                     </Typography>
@@ -269,7 +269,7 @@ export default function CareerPage() {
 
                   {/* 성과 및 결과 */}
                   <Box sx={{ mt: 1 }}>
-                    <Typography sx={{ fontSize: 16, fontWeight: 600 }}>성과 및 결과</Typography>
+                    <Typography sx={{ fontSize: 18, fontWeight: 600 }}>성과 및 결과</Typography>
                     <Typography sx={{ fontSize: 14, whiteSpace: 'pre-wrap' }}>
                       {p.achievements}
                     </Typography>
@@ -277,7 +277,7 @@ export default function CareerPage() {
 
                   {/* 관련 스킬 */}
                   <Box sx={{ mt: 1 }}>
-                    <Typography sx={{ fontSize: 16, fontWeight: 600 }}>관련 스킬</Typography>
+                    <Typography sx={{ fontSize: 18, fontWeight: 600 }}>관련 스킬</Typography>
 
                     <Stack
                       direction="row"
