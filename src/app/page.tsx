@@ -594,38 +594,265 @@ export default function CareerPage() {
 
         {section === 'work_log' && (
           <Box>
-            <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: 14, color: '#111', mb: 2 }}>Work Log</Typography>
-            <Stack spacing={1}>
+
+            <Typography sx={{ fontWeight: 700, fontSize: 24, mb: 2 }}>
+              Work Log
+            </Typography>
+
+            <Stack spacing={2}>
               {work_logs.map((w, i) => (
-                <Box key={i} sx={{ bgcolor: '#f8fafc', borderRadius: 2, p: 2 }}>
-                  <Typography sx={{ fontWeight: 600 }}>{w.title}</Typography>
-                  <Typography sx={{ fontSize: 11, color: '#e65100' }}>문제: {w.problem}</Typography>
-                  <Typography sx={{ fontSize: 11, color: '#fbc02d' }}>원인: {w.cause}</Typography>
-                  <Typography sx={{ fontSize: 11, color: '#43a047' }}>해결: {w.resolution}</Typography>
-                  <Typography sx={{ fontSize: 11, color: '#1976d2' }}>결과: {w.result}</Typography>
-                  {w.detail_link && <a href={w.detail_link} style={{ fontSize: 10, color: '#1976d2' }}>상세보기</a>}
+                <Box
+                  key={i}
+                  sx={{
+                    bgcolor: '#f8fafc',
+                    borderRadius: 2,
+                    p: 3
+                  }}
+                >
+
+                  {/* title */}
+                  <Typography sx={{ fontWeight: 700, fontSize: 18, mb: 2 }}>
+                    {w.title}
+                  </Typography>
+
+                  {/* 문제 */}
+                  <Box sx={{ mb: 2 }}>
+                    <Chip
+                      label="문제"
+                      size="small"
+                      sx={{
+                        mb: 0.7,
+                        fontSize: 12,
+                        backgroundColor: '#fff3e0',
+                        color: '#e65100'
+                      }}
+                    />
+
+                    <Typography
+                      sx={{
+                        fontSize: 14,
+                        lineHeight: 1.7,
+                        whiteSpace: 'pre-wrap'
+                      }}
+                    >
+                      {renderDescription(w.problem)}
+                    </Typography>
+                  </Box>
+
+                  {/* 원인 */}
+                  <Box sx={{ mb: 2 }}>
+                    <Chip
+                      label="원인"
+                      size="small"
+                      sx={{
+                        mb: 0.7,
+                        fontSize: 12,
+                        backgroundColor: '#fffde7',
+                        color: '#f9a825'
+                      }}
+                    />
+
+                    <Typography
+                      sx={{
+                        fontSize: 14,
+                        lineHeight: 1.7,
+                        whiteSpace: 'pre-wrap'
+                      }}
+                    >
+                      {renderDescription(w.cause)}
+                    </Typography>
+                  </Box>
+
+                  {/* 해결 */}
+                  <Box sx={{ mb: 2 }}>
+                    <Chip
+                      label="해결"
+                      size="small"
+                      sx={{
+                        mb: 0.7,
+                        fontSize: 12,
+                        backgroundColor: '#e8f5e9',
+                        color: '#2e7d32'
+                      }}
+                    />
+
+                    <Typography
+                      sx={{
+                        fontSize: 14,
+                        lineHeight: 1.7,
+                        whiteSpace: 'pre-wrap'
+                      }}
+                    >
+                      {renderDescription(w.resolution)}
+                    </Typography>
+                  </Box>
+
+                  {/* 결과 */}
+                  <Box sx={{ mb: 1 }}>
+                    <Chip
+                      label="결과"
+                      size="small"
+                      sx={{
+                        mb: 0.7,
+                        fontSize: 12,
+                        backgroundColor: '#e3f2fd',
+                        color: '#1565c0'
+                      }}
+                    />
+
+                    <Typography
+                      sx={{
+                        fontSize: 14,
+                        lineHeight: 1.7,
+                        fontWeight: 500,
+                        whiteSpace: 'pre-wrap'
+                      }}
+                    >
+                      {renderDescription(w.result)}
+                    </Typography>
+                  </Box>
+
+                  {/* link */}
+                  {w.detail_link && (
+                    <Link
+                      href={w.detail_link}
+                      target="_blank"
+                      sx={{
+                        fontSize: 13,
+                        color: '#1976d2',
+                        fontWeight: 500
+                      }}
+                    >
+                      상세보기 →
+                    </Link>
+                  )}
+
                 </Box>
               ))}
             </Stack>
+
           </Box>
         )}
 
         {section === 'lab' && (
           <Box>
-            <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: 14, color: '#111', mb: 2 }}>Lab</Typography>
-            <Stack spacing={1}>
+
+            <Typography sx={{ fontWeight: 700, fontSize: 24, mb: 2 }}>
+              Lab
+            </Typography>
+
+            <Stack spacing={2}>
               {labs.map((l, i) => (
-                <Box key={i} sx={{ bgcolor: '#f8fafc', borderRadius: 2, p: 2 }}>
-                  <Typography sx={{ fontWeight: 600 }}>{l.title}</Typography>
-                  <Typography sx={{ fontSize: 11, color: '#1976d2' }}>목적: {l.purpose}</Typography>
-                  <Typography sx={{ fontSize: 11, color: '#43a047' }}>환경: {l.environment}</Typography>
-                  <Typography sx={{ fontSize: 11, color: '#e65100' }}>과정: {l.process}</Typography>
-                  <Typography sx={{ fontSize: 11, color: '#1976d2' }}>결과: {l.results}</Typography>
-                  <Typography sx={{ fontSize: 11, color: '#43a047' }}>적용성: {l.applicability}</Typography>
-                  <Typography sx={{ fontSize: 11, color: '#fbc02d' }}>제한사항: {l.limitations}</Typography>
+                <Box
+                  key={i}
+                  sx={{
+                    bgcolor: '#f8fafc',
+                    borderRadius: 2,
+                    p: 3
+                  }}
+                >
+
+                  {/* title */}
+                  <Typography sx={{ fontWeight: 700, fontSize: 18, mb: 2 }}>
+                    {l.title}
+                  </Typography>
+
+                  {/* 목적 */}
+                  <Box sx={{ mb: 2 }}>
+                    <Chip
+                      label="목적"
+                      size="small"
+                      sx={{
+                        mb: 0.7,
+                        fontSize: 12,
+                        backgroundColor: '#e3f2fd',
+                        color: '#1565c0'
+                      }}
+                    />
+
+                    <Typography sx={{ fontSize: 14, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+                      {renderDescription(l.purpose)}
+                    </Typography>
+                  </Box>
+
+                  {/* 과정 */}
+                  <Box sx={{ mb: 2 }}>
+                    <Chip
+                      label="과정"
+                      size="small"
+                      sx={{
+                        mb: 0.7,
+                        fontSize: 12,
+                        backgroundColor: '#fff3e0',
+                        color: '#e65100'
+                      }}
+                    />
+
+                    <Typography sx={{ fontSize: 14, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+                      {renderDescription(l.process)}
+                    </Typography>
+                  </Box>
+
+                  {/* 결과 */}
+                  <Box sx={{ mb: 2 }}>
+                    <Chip
+                      label="결과"
+                      size="small"
+                      sx={{
+                        mb: 0.7,
+                        fontSize: 12,
+                        backgroundColor: '#e1f5fe',
+                        color: '#0277bd'
+                      }}
+                    />
+
+                    <Typography sx={{ fontSize: 14, lineHeight: 1.7, fontWeight: 500, whiteSpace: 'pre-wrap' }}>
+                      {renderDescription(l.results)}
+                    </Typography>
+                  </Box>
+
+                  {/* 적용성 */}
+                  <Box sx={{ mb: 2 }}>
+                    <Chip
+                      label="적용성"
+                      size="small"
+                      sx={{
+                        mb: 0.7,
+                        fontSize: 12,
+                        backgroundColor: '#f1f8e9',
+                        color: '#558b2f'
+                      }}
+                    />
+
+                    <Typography sx={{ fontSize: 14, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+                      {renderDescription(l.applicability)}
+                    </Typography>
+                  </Box>
+
+                  {/* 제한사항 */}
+                  {l.limitations && (
+                    <Box>
+                      <Chip
+                        label="제한사항"
+                        size="small"
+                        sx={{
+                          mb: 0.7,
+                          fontSize: 12,
+                          backgroundColor: '#fffde7',
+                          color: '#f9a825'
+                        }}
+                      />
+
+                      <Typography sx={{ fontSize: 14, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+                        {renderDescription(l.limitations)}
+                      </Typography>
+                    </Box>
+                  )}
+
                 </Box>
               ))}
             </Stack>
+
           </Box>
         )}
       </Paper>
