@@ -1,9 +1,9 @@
 
 // Material UI imports
 "use client";
-import { Box, Stack, Avatar, Typography, ToggleButton, ToggleButtonGroup, Tabs, Tab, Paper, Divider, Chip } from '@mui/material';
+import { Box, Stack, Avatar, Typography, ToggleButton, ToggleButtonGroup, Tabs, Tab, Paper, Divider, Chip, Link, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import { useState } from 'react';
-
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 // Pretendard, NotoSans, Roboto 폰트 비교용 (실제 적용은 globals.css 등에서)
 
 
@@ -15,6 +15,8 @@ export default function CareerPage() {
   const [profile, setProfile] = useState<any>(null);
   const [career, setCareer] = useState<any[]>([]);
   const [education, setEducation] = useState<any[]>([]);
+  const [experience, setExperience] = useState<any[]>([]);
+  const [activities, setActivities] = useState<any[]>([]);
   const [skills, setSkills] = useState<any[]>([]);
   const [certification, setCertification] = useState<any[]>([]);
   const [aboutme, setAboutme] = useState<any[]>([]);
@@ -24,10 +26,15 @@ export default function CareerPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const formatMonths = (monthsStr: string) => {
+  const formatMonths = (monthsStr?: string | null) => {
+    if (!monthsStr) return '';
+
     const months = parseInt(monthsStr);
+    if (isNaN(months)) return '';
+
     const years = Math.floor(months / 12);
     const remainingMonths = months % 12;
+
     if (years === 0) {
       return `${remainingMonths}개월`;
     } else if (remainingMonths === 0) {
@@ -41,6 +48,38 @@ export default function CareerPage() {
     if (serial.length <= 4) return serial;
     return serial.slice(0, 2) + '***' + serial.slice(-2);
   };
+
+  const renderDescription = (text: string) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g
+
+    return text.split('\n').map((line, lineIdx) => {
+      const parts = line.split(urlRegex)
+
+      return (
+        <span key={lineIdx} style={{ display: 'block' }}>
+          {parts.map((part, idx) => {
+            if (urlRegex.test(part)) {
+              return (
+                <Chip
+                  key={idx}
+                  label="외부링크"
+                  component={Link}
+                  href={part}
+                  clickable
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  size="small"
+                  sx={{ ml: 0.4, fontSize: 12, height: 24, backgroundColor: '#e1f5fe42', color: '#0277bd', border: '1px solid #b3e5fc' }}
+                />
+              )
+            }
+
+            return <span key={idx}>{part}</span>
+          })}
+        </span>
+      )
+    })
+  }
 
   useEffect(() => {
     async function fetchAll() {
@@ -61,6 +100,16 @@ export default function CareerPage() {
         const { data: educationData, error: educationErr } = await supabase.from('education').select('*').order('start_date', { ascending: false });
         if (educationErr) throw educationErr;
         setEducation(educationData || []);
+
+        // experience
+        const { data: experienceData, error: experienceErr } = await supabase.from('experience').select('*').order('start_date', { ascending: false });
+        if (experienceErr) throw experienceErr;
+        setExperience(experienceData || []);
+
+        // activities
+        const { data: activitiesData, error: activitiesErr } = await supabase.from('activities').select('*').order('start_date', { ascending: false });
+        if (activitiesErr) throw activitiesErr;
+        setActivities(activitiesData || []);
 
         // skills
         const { data: skillsData, error: skillsErr } = await supabase.from('skills').select('*');
@@ -192,7 +241,7 @@ export default function CareerPage() {
                     </Typography>
 
                     <Typography sx={{ fontSize: 13, color: 'text.secondary' }}>
-                      {c.start_date.slice(0,7)} ~ {c.end_date ? c.end_date.slice(0,7) : '현재'} ({formatMonths(c.months)})
+                      {c.start_date.slice(0,7)} ~ {c.end_date ? `${c.end_date.slice(0,7)} (${formatMonths(c.months)})` : '(현재)'}
                     </Typography>
                   </Box>
 
@@ -216,14 +265,47 @@ export default function CareerPage() {
               ))}
             </Stack>
 
-
-            {/* 학력 및 경험 */}
+            {/* 학력 */}
             <Typography sx={{ fontWeight: 700, fontSize: 24, mb: 2 }}>
-              학력 및 경험
+              학력
             </Typography>
 
             <Stack spacing={2} mb={4}>
               {education.map((e, i) => (
+                <Box
+                  key={i}
+                  sx={{
+                    bgcolor: '#f8fafc',
+                    borderRadius: 2,
+                    p: 3
+                  }}
+                >
+
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+                    <Typography sx={{ fontWeight: 700, fontSize: 18 }}>
+                      {e.major}
+                      <span style={{ fontWeight: 'normal', fontSize: 14, color: 'text.secondary' }}> |  {e.institution} </span>
+                    </Typography>
+
+                    <Typography sx={{ fontSize: 13, color: 'text.secondary' }}>
+                      {e.start_date.slice(0,7)} ~ {e.end_date ? e.end_date.slice(0,7) : '현재'}
+                    </Typography>
+                  </Box>
+
+
+
+
+                </Box>
+              ))}
+            </Stack>
+
+            {/* 경험 */}
+            <Typography sx={{ fontWeight: 700, fontSize: 24, mb: 2 }}>
+              경험
+            </Typography>
+
+            <Stack spacing={2} mb={4}>
+              {experience.map((e, i) => (
                 <Box
                   key={i}
                   sx={{
@@ -254,13 +336,56 @@ export default function CareerPage() {
                       whiteSpace: 'pre-wrap'
                     }}
                   >
-                    {e.description}
+                    {renderDescription(e.description)}
                   </Typography>
 
                 </Box>
               ))}
             </Stack>
 
+            {/* 교육 및 활동 */}
+            <Typography sx={{ fontWeight: 700, fontSize: 24, mb: 2 }}>
+              교육 및 활동
+            </Typography>
+
+            <Stack spacing={2} mb={4}>
+              {activities.map((a, i) => (
+                <Box
+                  key={i}
+                  sx={{
+                    bgcolor: '#f8fafc',
+                    borderRadius: 2,
+                    p: 3
+                  }}
+                >
+
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+                    <Typography sx={{ fontWeight: 700, fontSize: 18 }}>
+                      {a.major}
+                    </Typography>
+
+                    <Typography sx={{ fontSize: 13, color: 'text.secondary' }}>
+                      {a.start_date.slice(0,7)} ~ {a.end_date ? a.end_date.slice(0,7) : '현재'}
+                    </Typography>
+                  </Box>
+
+                  <Typography sx={{ fontSize: 14, color: 'text.secondary', mb: 1 }}>
+                    {a.institution}
+                  </Typography>
+
+                  <Typography
+                    sx={{
+                      fontSize: 14,
+                      lineHeight: 1.8,
+                      whiteSpace: 'pre-wrap'
+                    }}
+                  >
+                    {a.description}
+                  </Typography>
+
+                </Box>
+              ))}
+            </Stack>
 
             {/* 기술스택 */}
             <Typography sx={{ fontWeight: 700, fontSize: 24, mb: 2 }}>
@@ -469,38 +594,263 @@ export default function CareerPage() {
 
         {section === 'work_log' && (
           <Box>
-            <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: 14, color: '#111', mb: 2 }}>Work Log</Typography>
+
+            <Typography sx={{ fontWeight: 700, fontSize: 24, mb: 2 }}>
+              Work Log
+            </Typography>
+
             <Stack spacing={1}>
               {work_logs.map((w, i) => (
-                <Box key={i} sx={{ bgcolor: '#f8fafc', borderRadius: 2, p: 2 }}>
-                  <Typography sx={{ fontWeight: 600 }}>{w.title}</Typography>
-                  <Typography sx={{ fontSize: 11, color: '#e65100' }}>문제: {w.problem}</Typography>
-                  <Typography sx={{ fontSize: 11, color: '#fbc02d' }}>원인: {w.cause}</Typography>
-                  <Typography sx={{ fontSize: 11, color: '#43a047' }}>해결: {w.resolution}</Typography>
-                  <Typography sx={{ fontSize: 11, color: '#1976d2' }}>결과: {w.result}</Typography>
-                  {w.detail_link && <a href={w.detail_link} style={{ fontSize: 10, color: '#1976d2' }}>상세보기</a>}
-                </Box>
+                <Accordion
+                  key={i}
+                  sx={{
+                    bgcolor: '#f8fafc',
+                    borderRadius: 2,
+                    boxShadow: 'none',
+                    '&:before': { display: 'none' }
+                  }}
+                >
+
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Typography sx={{ fontWeight: 700, fontSize: 16 }}>
+                      {w.title}
+                    </Typography>
+                  </AccordionSummary>
+
+                  <AccordionDetails>
+
+                    {/* 문제 */}
+                    <Box sx={{ mb: 2 }}>
+                      <Chip
+                        label="문제"
+                        size="small"
+                        sx={{
+                          mb: 0.7,
+                          fontSize: 12,
+                          backgroundColor: '#fff3e0',
+                          color: '#e65100'
+                        }}
+                      />
+                      <Typography sx={{ fontSize: 14, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+                        {renderDescription(w.problem)}
+                      </Typography>
+                    </Box>
+
+                    {/* 원인 */}
+                    <Box sx={{ mb: 2 }}>
+                      <Chip
+                        label="원인"
+                        size="small"
+                        sx={{
+                          mb: 0.7,
+                          fontSize: 12,
+                          backgroundColor: '#fffde7',
+                          color: '#f9a825'
+                        }}
+                      />
+                      <Typography sx={{ fontSize: 14, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+                        {renderDescription(w.cause)}
+                      </Typography>
+                    </Box>
+
+                    {/* 해결 */}
+                    <Box sx={{ mb: 2 }}>
+                      <Chip
+                        label="해결"
+                        size="small"
+                        sx={{
+                          mb: 0.7,
+                          fontSize: 12,
+                          backgroundColor: '#e8f5e9',
+                          color: '#2e7d32'
+                        }}
+                      />
+                      <Typography sx={{ fontSize: 14, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+                        {renderDescription(w.resolution)}
+                      </Typography>
+                    </Box>
+
+                    {/* 결과 */}
+                    <Box sx={{ mb: 1 }}>
+                      <Chip
+                        label="결과"
+                        size="small"
+                        sx={{
+                          mb: 0.7,
+                          fontSize: 12,
+                          backgroundColor: '#e3f2fd',
+                          color: '#1565c0'
+                        }}
+                      />
+                      <Typography sx={{ fontSize: 14, fontWeight: 500, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+                        {renderDescription(w.result)}
+                      </Typography>
+                    </Box>
+
+                    {w.detail_link && (
+                      <Link
+                        href={w.detail_link}
+                        target="_blank"
+                        sx={{ fontSize: 13, fontWeight: 500 }}
+                      >
+                        상세보기 →
+                      </Link>
+                    )}
+
+                  </AccordionDetails>
+                </Accordion>
               ))}
             </Stack>
+
           </Box>
         )}
-
+ 
         {section === 'lab' && (
           <Box>
-            <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: 14, color: '#111', mb: 2 }}>Lab</Typography>
+
+            <Typography sx={{ fontWeight: 700, fontSize: 24, mb: 2 }}>
+              Lab
+            </Typography>
+
             <Stack spacing={1}>
               {labs.map((l, i) => (
-                <Box key={i} sx={{ bgcolor: '#f8fafc', borderRadius: 2, p: 2 }}>
-                  <Typography sx={{ fontWeight: 600 }}>{l.title}</Typography>
-                  <Typography sx={{ fontSize: 11, color: '#1976d2' }}>목적: {l.purpose}</Typography>
-                  <Typography sx={{ fontSize: 11, color: '#43a047' }}>환경: {l.environment}</Typography>
-                  <Typography sx={{ fontSize: 11, color: '#e65100' }}>과정: {l.process}</Typography>
-                  <Typography sx={{ fontSize: 11, color: '#1976d2' }}>결과: {l.results}</Typography>
-                  <Typography sx={{ fontSize: 11, color: '#43a047' }}>적용성: {l.applicability}</Typography>
-                  <Typography sx={{ fontSize: 11, color: '#fbc02d' }}>제한사항: {l.limitations}</Typography>
-                </Box>
+                <Accordion
+                  key={i}
+                  sx={{
+                    bgcolor: '#f8fafc',
+                    borderRadius: 2,
+                    boxShadow: 'none',
+                    '&:before': { display: 'none' }
+                  }}
+                >
+
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+
+                    <Typography sx={{ fontWeight: 700, fontSize: 16 }}>
+                      {l.title}
+                    </Typography>
+
+                  </AccordionSummary>
+
+                  <AccordionDetails>
+
+                    {/* 목적 */}
+                    <Box sx={{ mb: 2 }}>
+                      <Chip
+                        label="목적"
+                        size="small"
+                        sx={{
+                          mb: 0.7,
+                          fontSize: 12,
+                          backgroundColor: '#e3f2fd',
+                          color: '#1565c0'
+                        }}
+                      />
+
+                      <Typography sx={{ fontSize: 14, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+                        {renderDescription(l.purpose)}
+                      </Typography>
+                    </Box>
+
+                    {/* 환경 */}
+                    {l.environment && (
+                      <Box sx={{ mb: 2 }}>
+                        <Chip
+                          label="환경"
+                          size="small"
+                          sx={{
+                            mb: 0.7,
+                            fontSize: 12,
+                            backgroundColor: '#e8f5e9',
+                            color: '#2e7d32'
+                          }}
+                        />
+
+                        <Typography sx={{ fontSize: 14, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+                          {renderDescription(l.environment)}
+                        </Typography>
+                      </Box>
+                    )}
+
+                    {/* 과정 */}
+                    <Box sx={{ mb: 2 }}>
+                      <Chip
+                        label="과정"
+                        size="small"
+                        sx={{
+                          mb: 0.7,
+                          fontSize: 12,
+                          backgroundColor: '#fff3e0',
+                          color: '#e65100'
+                        }}
+                      />
+
+                      <Typography sx={{ fontSize: 14, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+                        {renderDescription(l.process)}
+                      </Typography>
+                    </Box>
+
+                    {/* 결과 */}
+                    <Box sx={{ mb: 2 }}>
+                      <Chip
+                        label="결과"
+                        size="small"
+                        sx={{
+                          mb: 0.7,
+                          fontSize: 12,
+                          backgroundColor: '#e1f5fe',
+                          color: '#0277bd'
+                        }}
+                      />
+
+                      <Typography sx={{ fontSize: 14, lineHeight: 1.7, fontWeight: 500, whiteSpace: 'pre-wrap' }}>
+                        {renderDescription(l.results)}
+                      </Typography>
+                    </Box>
+
+                    {/* 적용성 */}
+                    <Box sx={{ mb: 2 }}>
+                      <Chip
+                        label="적용성"
+                        size="small"
+                        sx={{
+                          mb: 0.7,
+                          fontSize: 12,
+                          backgroundColor: '#f1f8e9',
+                          color: '#558b2f'
+                        }}
+                      />
+
+                      <Typography sx={{ fontSize: 14, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+                        {renderDescription(l.applicability)}
+                      </Typography>
+                    </Box>
+
+                    {/* 제한사항 */}
+                    {l.limitations && (
+                      <Box>
+                        <Chip
+                          label="제한사항"
+                          size="small"
+                          sx={{
+                            mb: 0.7,
+                            fontSize: 12,
+                            backgroundColor: '#fffde7',
+                            color: '#f9a825'
+                          }}
+                        />
+
+                        <Typography sx={{ fontSize: 14, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+                          {renderDescription(l.limitations)}
+                        </Typography>
+                      </Box>
+                    )}
+
+                  </AccordionDetails>
+                </Accordion>
               ))}
             </Stack>
+
           </Box>
         )}
       </Paper>
