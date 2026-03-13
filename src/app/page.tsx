@@ -1,9 +1,9 @@
 
 // Material UI imports
 "use client";
-import { Box, Stack, Avatar, Typography, ToggleButton, ToggleButtonGroup, Tabs, Tab, Paper, Divider, Chip, Link } from '@mui/material';
+import { Box, Stack, Avatar, Typography, ToggleButton, ToggleButtonGroup, Tabs, Tab, Paper, Divider, Chip, Link, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import { useState } from 'react';
-
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 // Pretendard, NotoSans, Roboto 폰트 비교용 (실제 적용은 globals.css 등에서)
 
 
@@ -599,241 +599,47 @@ export default function CareerPage() {
               Work Log
             </Typography>
 
-            <Stack spacing={2}>
+            <Stack spacing={1}>
               {work_logs.map((w, i) => (
-                <Box
+                <Accordion
                   key={i}
                   sx={{
                     bgcolor: '#f8fafc',
                     borderRadius: 2,
-                    p: 3
+                    boxShadow: 'none',
+                    '&:before': { display: 'none' }
                   }}
                 >
 
-                  {/* title */}
-                  <Typography sx={{ fontWeight: 700, fontSize: 18, mb: 2 }}>
-                    {w.title}
-                  </Typography>
-
-                  {/* 문제 */}
-                  <Box sx={{ mb: 2 }}>
-                    <Chip
-                      label="문제"
-                      size="small"
-                      sx={{
-                        mb: 0.7,
-                        fontSize: 12,
-                        backgroundColor: '#fff3e0',
-                        color: '#e65100'
-                      }}
-                    />
-
-                    <Typography
-                      sx={{
-                        fontSize: 14,
-                        lineHeight: 1.7,
-                        whiteSpace: 'pre-wrap'
-                      }}
-                    >
-                      {renderDescription(w.problem)}
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Typography sx={{ fontWeight: 700, fontSize: 16 }}>
+                      {w.title}
                     </Typography>
-                  </Box>
+                  </AccordionSummary>
 
-                  {/* 원인 */}
-                  <Box sx={{ mb: 2 }}>
-                    <Chip
-                      label="원인"
-                      size="small"
-                      sx={{
-                        mb: 0.7,
-                        fontSize: 12,
-                        backgroundColor: '#fffde7',
-                        color: '#f9a825'
-                      }}
-                    />
+                  <AccordionDetails>
 
-                    <Typography
-                      sx={{
-                        fontSize: 14,
-                        lineHeight: 1.7,
-                        whiteSpace: 'pre-wrap'
-                      }}
-                    >
-                      {renderDescription(w.cause)}
-                    </Typography>
-                  </Box>
-
-                  {/* 해결 */}
-                  <Box sx={{ mb: 2 }}>
-                    <Chip
-                      label="해결"
-                      size="small"
-                      sx={{
-                        mb: 0.7,
-                        fontSize: 12,
-                        backgroundColor: '#e8f5e9',
-                        color: '#2e7d32'
-                      }}
-                    />
-
-                    <Typography
-                      sx={{
-                        fontSize: 14,
-                        lineHeight: 1.7,
-                        whiteSpace: 'pre-wrap'
-                      }}
-                    >
-                      {renderDescription(w.resolution)}
-                    </Typography>
-                  </Box>
-
-                  {/* 결과 */}
-                  <Box sx={{ mb: 1 }}>
-                    <Chip
-                      label="결과"
-                      size="small"
-                      sx={{
-                        mb: 0.7,
-                        fontSize: 12,
-                        backgroundColor: '#e3f2fd',
-                        color: '#1565c0'
-                      }}
-                    />
-
-                    <Typography
-                      sx={{
-                        fontSize: 14,
-                        lineHeight: 1.7,
-                        fontWeight: 500,
-                        whiteSpace: 'pre-wrap'
-                      }}
-                    >
-                      {renderDescription(w.result)}
-                    </Typography>
-                  </Box>
-
-                  {/* link */}
-                  {w.detail_link && (
-                    <Link
-                      href={w.detail_link}
-                      target="_blank"
-                      sx={{
-                        fontSize: 13,
-                        color: '#1976d2',
-                        fontWeight: 500
-                      }}
-                    >
-                      상세보기 →
-                    </Link>
-                  )}
-
-                </Box>
-              ))}
-            </Stack>
-
-          </Box>
-        )}
-
-        {section === 'lab' && (
-          <Box>
-
-            <Typography sx={{ fontWeight: 700, fontSize: 24, mb: 2 }}>
-              Lab
-            </Typography>
-
-            <Stack spacing={2}>
-              {labs.map((l, i) => (
-                <Box
-                  key={i}
-                  sx={{
-                    bgcolor: '#f8fafc',
-                    borderRadius: 2,
-                    p: 3
-                  }}
-                >
-
-                  {/* title */}
-                  <Typography sx={{ fontWeight: 700, fontSize: 18, mb: 2 }}>
-                    {l.title}
-                  </Typography>
-
-                  {/* 목적 */}
-                  <Box sx={{ mb: 2 }}>
-                    <Chip
-                      label="목적"
-                      size="small"
-                      sx={{
-                        mb: 0.7,
-                        fontSize: 12,
-                        backgroundColor: '#e3f2fd',
-                        color: '#1565c0'
-                      }}
-                    />
-
-                    <Typography sx={{ fontSize: 14, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
-                      {renderDescription(l.purpose)}
-                    </Typography>
-                  </Box>
-
-                  {/* 과정 */}
-                  <Box sx={{ mb: 2 }}>
-                    <Chip
-                      label="과정"
-                      size="small"
-                      sx={{
-                        mb: 0.7,
-                        fontSize: 12,
-                        backgroundColor: '#fff3e0',
-                        color: '#e65100'
-                      }}
-                    />
-
-                    <Typography sx={{ fontSize: 14, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
-                      {renderDescription(l.process)}
-                    </Typography>
-                  </Box>
-
-                  {/* 결과 */}
-                  <Box sx={{ mb: 2 }}>
-                    <Chip
-                      label="결과"
-                      size="small"
-                      sx={{
-                        mb: 0.7,
-                        fontSize: 12,
-                        backgroundColor: '#e1f5fe',
-                        color: '#0277bd'
-                      }}
-                    />
-
-                    <Typography sx={{ fontSize: 14, lineHeight: 1.7, fontWeight: 500, whiteSpace: 'pre-wrap' }}>
-                      {renderDescription(l.results)}
-                    </Typography>
-                  </Box>
-
-                  {/* 적용성 */}
-                  <Box sx={{ mb: 2 }}>
-                    <Chip
-                      label="적용성"
-                      size="small"
-                      sx={{
-                        mb: 0.7,
-                        fontSize: 12,
-                        backgroundColor: '#f1f8e9',
-                        color: '#558b2f'
-                      }}
-                    />
-
-                    <Typography sx={{ fontSize: 14, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
-                      {renderDescription(l.applicability)}
-                    </Typography>
-                  </Box>
-
-                  {/* 제한사항 */}
-                  {l.limitations && (
-                    <Box>
+                    {/* 문제 */}
+                    <Box sx={{ mb: 2 }}>
                       <Chip
-                        label="제한사항"
+                        label="문제"
+                        size="small"
+                        sx={{
+                          mb: 0.7,
+                          fontSize: 12,
+                          backgroundColor: '#fff3e0',
+                          color: '#e65100'
+                        }}
+                      />
+                      <Typography sx={{ fontSize: 14, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+                        {renderDescription(w.problem)}
+                      </Typography>
+                    </Box>
+
+                    {/* 원인 */}
+                    <Box sx={{ mb: 2 }}>
+                      <Chip
+                        label="원인"
                         size="small"
                         sx={{
                           mb: 0.7,
@@ -842,14 +648,206 @@ export default function CareerPage() {
                           color: '#f9a825'
                         }}
                       />
-
                       <Typography sx={{ fontSize: 14, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
-                        {renderDescription(l.limitations)}
+                        {renderDescription(w.cause)}
                       </Typography>
                     </Box>
-                  )}
 
-                </Box>
+                    {/* 해결 */}
+                    <Box sx={{ mb: 2 }}>
+                      <Chip
+                        label="해결"
+                        size="small"
+                        sx={{
+                          mb: 0.7,
+                          fontSize: 12,
+                          backgroundColor: '#e8f5e9',
+                          color: '#2e7d32'
+                        }}
+                      />
+                      <Typography sx={{ fontSize: 14, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+                        {renderDescription(w.resolution)}
+                      </Typography>
+                    </Box>
+
+                    {/* 결과 */}
+                    <Box sx={{ mb: 1 }}>
+                      <Chip
+                        label="결과"
+                        size="small"
+                        sx={{
+                          mb: 0.7,
+                          fontSize: 12,
+                          backgroundColor: '#e3f2fd',
+                          color: '#1565c0'
+                        }}
+                      />
+                      <Typography sx={{ fontSize: 14, fontWeight: 500, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+                        {renderDescription(w.result)}
+                      </Typography>
+                    </Box>
+
+                    {w.detail_link && (
+                      <Link
+                        href={w.detail_link}
+                        target="_blank"
+                        sx={{ fontSize: 13, fontWeight: 500 }}
+                      >
+                        상세보기 →
+                      </Link>
+                    )}
+
+                  </AccordionDetails>
+                </Accordion>
+              ))}
+            </Stack>
+
+          </Box>
+        )}
+ 
+        {section === 'lab' && (
+          <Box>
+
+            <Typography sx={{ fontWeight: 700, fontSize: 24, mb: 2 }}>
+              Lab
+            </Typography>
+
+            <Stack spacing={1}>
+              {labs.map((l, i) => (
+                <Accordion
+                  key={i}
+                  sx={{
+                    bgcolor: '#f8fafc',
+                    borderRadius: 2,
+                    boxShadow: 'none',
+                    '&:before': { display: 'none' }
+                  }}
+                >
+
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+
+                    <Typography sx={{ fontWeight: 700, fontSize: 16 }}>
+                      {l.title}
+                    </Typography>
+
+                  </AccordionSummary>
+
+                  <AccordionDetails>
+
+                    {/* 목적 */}
+                    <Box sx={{ mb: 2 }}>
+                      <Chip
+                        label="목적"
+                        size="small"
+                        sx={{
+                          mb: 0.7,
+                          fontSize: 12,
+                          backgroundColor: '#e3f2fd',
+                          color: '#1565c0'
+                        }}
+                      />
+
+                      <Typography sx={{ fontSize: 14, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+                        {renderDescription(l.purpose)}
+                      </Typography>
+                    </Box>
+
+                    {/* 환경 */}
+                    {l.environment && (
+                      <Box sx={{ mb: 2 }}>
+                        <Chip
+                          label="환경"
+                          size="small"
+                          sx={{
+                            mb: 0.7,
+                            fontSize: 12,
+                            backgroundColor: '#e8f5e9',
+                            color: '#2e7d32'
+                          }}
+                        />
+
+                        <Typography sx={{ fontSize: 14, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+                          {renderDescription(l.environment)}
+                        </Typography>
+                      </Box>
+                    )}
+
+                    {/* 과정 */}
+                    <Box sx={{ mb: 2 }}>
+                      <Chip
+                        label="과정"
+                        size="small"
+                        sx={{
+                          mb: 0.7,
+                          fontSize: 12,
+                          backgroundColor: '#fff3e0',
+                          color: '#e65100'
+                        }}
+                      />
+
+                      <Typography sx={{ fontSize: 14, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+                        {renderDescription(l.process)}
+                      </Typography>
+                    </Box>
+
+                    {/* 결과 */}
+                    <Box sx={{ mb: 2 }}>
+                      <Chip
+                        label="결과"
+                        size="small"
+                        sx={{
+                          mb: 0.7,
+                          fontSize: 12,
+                          backgroundColor: '#e1f5fe',
+                          color: '#0277bd'
+                        }}
+                      />
+
+                      <Typography sx={{ fontSize: 14, lineHeight: 1.7, fontWeight: 500, whiteSpace: 'pre-wrap' }}>
+                        {renderDescription(l.results)}
+                      </Typography>
+                    </Box>
+
+                    {/* 적용성 */}
+                    <Box sx={{ mb: 2 }}>
+                      <Chip
+                        label="적용성"
+                        size="small"
+                        sx={{
+                          mb: 0.7,
+                          fontSize: 12,
+                          backgroundColor: '#f1f8e9',
+                          color: '#558b2f'
+                        }}
+                      />
+
+                      <Typography sx={{ fontSize: 14, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+                        {renderDescription(l.applicability)}
+                      </Typography>
+                    </Box>
+
+                    {/* 제한사항 */}
+                    {l.limitations && (
+                      <Box>
+                        <Chip
+                          label="제한사항"
+                          size="small"
+                          sx={{
+                            mb: 0.7,
+                            fontSize: 12,
+                            backgroundColor: '#fffde7',
+                            color: '#f9a825'
+                          }}
+                        />
+
+                        <Typography sx={{ fontSize: 14, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+                          {renderDescription(l.limitations)}
+                        </Typography>
+                      </Box>
+                    )}
+
+                  </AccordionDetails>
+                </Accordion>
               ))}
             </Stack>
 
