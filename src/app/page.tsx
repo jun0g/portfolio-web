@@ -1,7 +1,7 @@
 
 // Material UI imports
 "use client";
-import { Box, Stack, Avatar, Typography, ToggleButton, ToggleButtonGroup, Tabs, Tab, Paper, Divider, Chip } from '@mui/material';
+import { Box, Stack, Avatar, Typography, ToggleButton, ToggleButtonGroup, Tabs, Tab, Paper, Divider, Chip, Link } from '@mui/material';
 import { useState } from 'react';
 
 // Pretendard, NotoSans, Roboto 폰트 비교용 (실제 적용은 globals.css 등에서)
@@ -15,6 +15,8 @@ export default function CareerPage() {
   const [profile, setProfile] = useState<any>(null);
   const [career, setCareer] = useState<any[]>([]);
   const [education, setEducation] = useState<any[]>([]);
+  const [experience, setExperience] = useState<any[]>([]);
+  const [activities, setActivities] = useState<any[]>([]);
   const [skills, setSkills] = useState<any[]>([]);
   const [certification, setCertification] = useState<any[]>([]);
   const [aboutme, setAboutme] = useState<any[]>([]);
@@ -24,10 +26,15 @@ export default function CareerPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const formatMonths = (monthsStr: string) => {
+  const formatMonths = (monthsStr?: string | null) => {
+    if (!monthsStr) return '';
+
     const months = parseInt(monthsStr);
+    if (isNaN(months)) return '';
+
     const years = Math.floor(months / 12);
     const remainingMonths = months % 12;
+
     if (years === 0) {
       return `${remainingMonths}개월`;
     } else if (remainingMonths === 0) {
@@ -41,6 +48,38 @@ export default function CareerPage() {
     if (serial.length <= 4) return serial;
     return serial.slice(0, 2) + '***' + serial.slice(-2);
   };
+
+  const renderDescription = (text: string) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g
+
+    return text.split('\n').map((line, lineIdx) => {
+      const parts = line.split(urlRegex)
+
+      return (
+        <span key={lineIdx} style={{ display: 'block' }}>
+          {parts.map((part, idx) => {
+            if (urlRegex.test(part)) {
+              return (
+                <Chip
+                  key={idx}
+                  label="외부링크"
+                  component={Link}
+                  href={part}
+                  clickable
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  size="small"
+                  sx={{ ml: 0.4, fontSize: 12, height: 24, backgroundColor: '#e1f5fe42', color: '#0277bd', border: '1px solid #b3e5fc' }}
+                />
+              )
+            }
+
+            return <span key={idx}>{part}</span>
+          })}
+        </span>
+      )
+    })
+  }
 
   useEffect(() => {
     async function fetchAll() {
@@ -61,6 +100,16 @@ export default function CareerPage() {
         const { data: educationData, error: educationErr } = await supabase.from('education').select('*').order('start_date', { ascending: false });
         if (educationErr) throw educationErr;
         setEducation(educationData || []);
+
+        // experience
+        const { data: experienceData, error: experienceErr } = await supabase.from('experience').select('*').order('start_date', { ascending: false });
+        if (experienceErr) throw experienceErr;
+        setExperience(experienceData || []);
+
+        // activities
+        const { data: activitiesData, error: activitiesErr } = await supabase.from('activities').select('*').order('start_date', { ascending: false });
+        if (activitiesErr) throw activitiesErr;
+        setActivities(activitiesData || []);
 
         // skills
         const { data: skillsData, error: skillsErr } = await supabase.from('skills').select('*');
@@ -192,7 +241,7 @@ export default function CareerPage() {
                     </Typography>
 
                     <Typography sx={{ fontSize: 13, color: 'text.secondary' }}>
-                      {c.start_date.slice(0,7)} ~ {c.end_date ? c.end_date.slice(0,7) : '현재'} ({formatMonths(c.months)})
+                      {c.start_date.slice(0,7)} ~ {c.end_date ? `${c.end_date.slice(0,7)} (${formatMonths(c.months)})` : '(현재)'}
                     </Typography>
                   </Box>
 
@@ -216,14 +265,47 @@ export default function CareerPage() {
               ))}
             </Stack>
 
-
-            {/* 학력 및 경험 */}
+            {/* 학력 */}
             <Typography sx={{ fontWeight: 700, fontSize: 24, mb: 2 }}>
-              학력 및 경험
+              학력
             </Typography>
 
             <Stack spacing={2} mb={4}>
               {education.map((e, i) => (
+                <Box
+                  key={i}
+                  sx={{
+                    bgcolor: '#f8fafc',
+                    borderRadius: 2,
+                    p: 3
+                  }}
+                >
+
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+                    <Typography sx={{ fontWeight: 700, fontSize: 18 }}>
+                      {e.major}
+                      <span style={{ fontWeight: 'normal', fontSize: 14, color: 'text.secondary' }}> |  {e.institution} </span>
+                    </Typography>
+
+                    <Typography sx={{ fontSize: 13, color: 'text.secondary' }}>
+                      {e.start_date.slice(0,7)} ~ {e.end_date ? e.end_date.slice(0,7) : '현재'}
+                    </Typography>
+                  </Box>
+
+
+
+
+                </Box>
+              ))}
+            </Stack>
+
+            {/* 경험 */}
+            <Typography sx={{ fontWeight: 700, fontSize: 24, mb: 2 }}>
+              경험
+            </Typography>
+
+            <Stack spacing={2} mb={4}>
+              {experience.map((e, i) => (
                 <Box
                   key={i}
                   sx={{
@@ -254,13 +336,56 @@ export default function CareerPage() {
                       whiteSpace: 'pre-wrap'
                     }}
                   >
-                    {e.description}
+                    {renderDescription(e.description)}
                   </Typography>
 
                 </Box>
               ))}
             </Stack>
 
+            {/* 교육 및 활동 */}
+            <Typography sx={{ fontWeight: 700, fontSize: 24, mb: 2 }}>
+              교육 및 활동
+            </Typography>
+
+            <Stack spacing={2} mb={4}>
+              {activities.map((a, i) => (
+                <Box
+                  key={i}
+                  sx={{
+                    bgcolor: '#f8fafc',
+                    borderRadius: 2,
+                    p: 3
+                  }}
+                >
+
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+                    <Typography sx={{ fontWeight: 700, fontSize: 18 }}>
+                      {a.major}
+                    </Typography>
+
+                    <Typography sx={{ fontSize: 13, color: 'text.secondary' }}>
+                      {a.start_date.slice(0,7)} ~ {a.end_date ? a.end_date.slice(0,7) : '현재'}
+                    </Typography>
+                  </Box>
+
+                  <Typography sx={{ fontSize: 14, color: 'text.secondary', mb: 1 }}>
+                    {a.institution}
+                  </Typography>
+
+                  <Typography
+                    sx={{
+                      fontSize: 14,
+                      lineHeight: 1.8,
+                      whiteSpace: 'pre-wrap'
+                    }}
+                  >
+                    {a.description}
+                  </Typography>
+
+                </Box>
+              ))}
+            </Stack>
 
             {/* 기술스택 */}
             <Typography sx={{ fontWeight: 700, fontSize: 24, mb: 2 }}>
