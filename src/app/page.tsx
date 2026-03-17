@@ -488,105 +488,135 @@ export default function CareerPage() {
 
         {section === 'project' && (
           <Box>
-            <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: 24, color: '#111', mb: 2 }}>프로젝트</Typography>
-            <Stack spacing={1}>
+            <Typography
+              variant="subtitle1"
+              sx={{ fontWeight: 700, fontSize: 24, color: '#111', mb: 2 }}
+            >
+              프로젝트
+            </Typography>
+
+            <Stack spacing={1.5}>
               {projects.map((p, i) => (
-                <Box key={i} sx={{ bgcolor: '#f8fafc', borderRadius: 2, p: 2 }}>
-                  {/* Title + Date */}
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <Typography sx={{ fontWeight: 700, fontSize: 22 }}>
-                      {p.title}
-                    </Typography>
-
-                    <Typography sx={{ fontSize: 13, color: 'text.secondary' }}>
-                      {p.start_date.slice(0, 7)} ~ {p.end_date.slice(0, 7)} ({formatMonths(p.months)})
-                    </Typography>
-                  </Box>
-
-                  {/* 개요 */}
-                  <Box sx={{ mt: 3 }}>
-                    <Typography sx={{ fontSize: 16, fontWeight: 700, mb: 0.5 }}>
-                      프로젝트 개요
-                    </Typography>
-
-                    <Typography
+                <Accordion
+                  key={i}
+                  sx={{
+                    bgcolor: '#f8fafc',
+                    borderRadius: 2,
+                    '&:before': { display: 'none' }
+                  }}
+                >
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    sx={{
+                      px: 2,
+                      py: 1
+                    }}
+                  >
+                    <Box
                       sx={{
-                        fontSize: 14,
-                        lineHeight: 1.7,
-                        color: 'text.primary',
-                        whiteSpace: 'pre-wrap'
+                        width: '100%',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
                       }}
                     >
-                      {p.overview}
-                    </Typography>
-                  </Box>
+                      <Typography sx={{ fontWeight: 700, fontSize: 18 }}>
+                        {p.title}
+                      </Typography>
 
-                  {/* 역할 */}
-                  <Box sx={{ mt: 3 }}>
-                    <Typography sx={{ fontSize: 16, fontWeight: 700, mb: 0.5 }}>
-                      주요 역할
-                    </Typography>
+                      <Typography sx={{ fontSize: 13, color: 'text.secondary' }}>
+                        {p.start_date.slice(0, 7)} ~ {p.end_date.slice(0, 7)} ({formatMonths(p.months)})
+                      </Typography>
+                    </Box>
+                  </AccordionSummary>
 
-                    <Typography
-                      sx={{
-                        fontSize: 14,
-                        lineHeight: 1.7,
-                        whiteSpace: 'pre-wrap'
-                      }}
-                    >
-                      {p.role}
-                    </Typography>
-                  </Box>
+                  <AccordionDetails sx={{ px: 2, pb: 2 }}>
 
-                  {/* 성과 및 결과 */}
-                  <Box sx={{ mt: 3 }}>
-                    <Typography sx={{ fontSize: 16, fontWeight: 700, mb: 0.5 }}>
-                      성과
-                    </Typography>
+                    {/* 개요 */}
+                    <Box sx={{ mt: 1 }}>
+                      <Typography sx={{ fontSize: 16, fontWeight: 700, mb: 0.5 }}>
+                        프로젝트 개요
+                      </Typography>
 
-                    <Typography
-                      sx={{
-                        fontSize: 14,
-                        lineHeight: 1.7,
-                        color: 'success.main',
-                        fontWeight: 500,
-                        whiteSpace: 'pre-wrap'
-                      }}
-                    >
-                      {p.achievements}
-                    </Typography>
-                  </Box>
-
-                  {/* 관련 스킬 */}
-                  <Box sx={{ mt: 3 }}>
-                    <Typography sx={{ fontSize: 16, fontWeight: 700, mb: 1 }}>
-                      기술 스택
-                    </Typography>
-
-                    <Stack direction="row" spacing={1} flexWrap="wrap">
-                      {p.skills?.split(',').map((skill: string, idx: number) => (
-                      <Chip
-                        key={idx}
-                        label={skill.trim()}
-                        size="small"
-                        variant="outlined"
-                        color="info"
+                      <Typography
                         sx={{
-                          mb: 1,
-                          fontSize: 12,
-                          height: 24,
-                          backgroundColor: '#e1f5fe42',
-                          color: '#0277bd',
-                          border: '1px solid #b3e5fc',
-                          '&:hover': {
-                            backgroundColor: '#b3e5fceb'
-                          }
+                          fontSize: 14,
+                          lineHeight: 1.7,
+                          whiteSpace: 'pre-wrap'
                         }}
-                      />
-                      ))}
-                    </Stack>
-                  </Box>
-                </Box>
+                      >
+                        {p.overview}
+                      </Typography>
+                    </Box>
+
+                    {/* 역할 */}
+                    <Box sx={{ mt: 3 }}>
+                      <Typography sx={{ fontSize: 16, fontWeight: 700, mb: 0.5 }}>
+                        주요 역할
+                      </Typography>
+
+                      <Typography
+                        sx={{
+                          fontSize: 14,
+                          lineHeight: 1.7,
+                          whiteSpace: 'pre-wrap'
+                        }}
+                      >
+                        {p.role}
+                      </Typography>
+                    </Box>
+
+                    {/* 성과 */}
+                    <Box sx={{ mt: 3 }}>
+                      <Typography sx={{ fontSize: 16, fontWeight: 700, mb: 0.5 }}>
+                        성과
+                      </Typography>
+
+                      <Typography
+                        sx={{
+                          fontSize: 14,
+                          lineHeight: 1.7,
+                          color: 'success.main',
+                          fontWeight: 500,
+                          whiteSpace: 'pre-wrap'
+                        }}
+                      >
+                        {p.achievements}
+                      </Typography>
+                    </Box>
+
+                    {/* 기술스택 */}
+                    <Box sx={{ mt: 3 }}>
+                      <Typography sx={{ fontSize: 16, fontWeight: 700, mb: 1 }}>
+                        기술 스택
+                      </Typography>
+
+                      <Stack direction="row" spacing={1} flexWrap="wrap">
+                        {p.skills?.split(',').map((skill: string, idx: number) => (
+                          <Chip
+                            key={idx}
+                            label={skill.trim()}
+                            size="small"
+                            variant="outlined"
+                            color="info"
+                            sx={{
+                              mb: 1,
+                              fontSize: 12,
+                              height: 24,
+                              backgroundColor: '#e1f5fe42',
+                              color: '#0277bd',
+                              border: '1px solid #b3e5fc',
+                              '&:hover': {
+                                backgroundColor: '#b3e5fceb'
+                              }
+                            }}
+                          />
+                        ))}
+                      </Stack>
+                    </Box>
+
+                  </AccordionDetails>
+                </Accordion>
               ))}
             </Stack>
           </Box>
