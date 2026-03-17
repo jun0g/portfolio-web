@@ -600,7 +600,9 @@ export default function CareerPage() {
             </Typography>
 
             <Stack spacing={1}>
-              {work_logs.map((w, i) => (
+              {[...work_logs]
+                .sort((a, b) => b.order - a.order)
+                .map((w, i) => (
                 <Accordion
                   key={i}
                   sx={{
