@@ -161,8 +161,7 @@ export default function CareerPage() {
   const sectionTabs = [
     { value: 'resume', label: '이력서' },
     { value: 'project', label: '프로젝트' },
-    { value: 'work_log', label: 'Work Log' },
-    { value: 'lab', label: 'Lab' },
+    { value: 'work_log', label: 'Engineering Logs' },
   ];
 
   return (
@@ -188,7 +187,7 @@ export default function CareerPage() {
             sx={{ bgcolor: '#f5f5f5', borderRadius: 2 }}
           >
             {sectionTabs.map(tab => (
-              <ToggleButton key={tab.value} value={tab.value} sx={{ fontSize: 12, fontWeight: 600, color: '#333', px: 3 }}>
+              <ToggleButton key={tab.value} value={tab.value} sx={{ fontSize: 12, fontWeight: 600, color: '#333', px: 3, textTransform: 'none'}}>
                 {tab.label}
               </ToggleButton>
             ))}
@@ -495,7 +494,7 @@ export default function CareerPage() {
               프로젝트
             </Typography>
 
-            <Stack spacing={1.5}>
+            <Stack spacing={1}>
               {projects.map((p, i) => (
                 <Accordion
                   key={i}
@@ -626,10 +625,10 @@ export default function CareerPage() {
           <Box>
 
             <Typography sx={{ fontWeight: 700, fontSize: 24, mb: 2 }}>
-              Work Log
+              Work Logs
             </Typography>
 
-            <Stack spacing={1}>
+            <Stack spacing={1} mb={4}>
               {[...work_logs]
                 .sort((a, b) => b.order - a.order)
                 .map((w, i) => (
@@ -734,17 +733,11 @@ export default function CareerPage() {
               ))}
             </Stack>
 
-          </Box>
-        )}
- 
-        {section === 'lab' && (
-          <Box>
-
             <Typography sx={{ fontWeight: 700, fontSize: 24, mb: 2 }}>
-              Lab
+              Labs
             </Typography>
 
-            <Stack spacing={1}>
+            <Stack spacing={2} mb={4}>
               {labs.map((l, i) => (
                 <Accordion
                   key={i}
@@ -783,26 +776,6 @@ export default function CareerPage() {
                         {renderDescription(l.purpose)}
                       </Typography>
                     </Box>
-
-                    {/* 환경 */}
-                    {l.environment && (
-                      <Box sx={{ mb: 2 }}>
-                        <Chip
-                          label="환경"
-                          size="small"
-                          sx={{
-                            mb: 0.7,
-                            fontSize: 12,
-                            backgroundColor: '#e8f5e9',
-                            color: '#2e7d32'
-                          }}
-                        />
-
-                        <Typography sx={{ fontSize: 14, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
-                          {renderDescription(l.environment)}
-                        </Typography>
-                      </Box>
-                    )}
 
                     {/* 과정 */}
                     <Box sx={{ mb: 2 }}>
@@ -882,9 +855,10 @@ export default function CareerPage() {
                 </Accordion>
               ))}
             </Stack>
-
+            
           </Box>
         )}
+ 
       </Paper>
     </Box>
   );
