@@ -435,13 +435,14 @@ export default function CareerPage() {
                   }}
                 >
 
-                  <Typography sx={{ fontWeight: 700, fontSize: 18 }}>
-                    {c.name}
-                  </Typography>
-
-                  <Typography sx={{ fontSize: 13, color: 'text.secondary', mt: 0.5 }}>
-                    {c.issuer} | {c.issue_date} | {formatSerial(c.serial)}
-                  </Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Typography sx={{ fontWeight: 700, fontSize: 18 }}>
+                      {c.name}
+                    </Typography>
+                    <Typography sx={{ fontSize: 13, color: 'text.secondary', mt: 0.5 }}>
+                      {c.issuer} | {c.issue_date} | {formatSerial(c.serial)}
+                    </Typography>
+                  </Box>
 
                 </Box>
               ))}
